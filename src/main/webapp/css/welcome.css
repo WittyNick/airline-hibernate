@@ -1,0 +1,36 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#div_signin {
+    width: 50px;
+    margin-right: 30px;
+    margin-left: auto;
+}
+
+#content {
+    width: 960px;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    background: #ffffff;
+}
+
+#tableFlights {
+    width: 940px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+}
+
+#tableFlights td,
+#tableFlights th {
+    padding: 3px;
+    border: 1px solid;
+}
+
+#tableFlights th {
+    background: #dcdcdc;
+}

@@ -1,0 +1,80 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+th {
+    background: #dcdcdc;
+}
+
+th, td {
+    cursor: default;
+}
+
+input {
+    margin-right: 5px;
+    padding: 3px;
+}
+
+select {
+    padding: 3px;
+    margin-right: 5px;
+}
+
+#tableNewEmployee {
+    margin-top: 10px;
+}
+
+#employeeList,
+#employeeBase {
+    min-width: 500px;
+    border-collapse: collapse;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#employeeList th,
+#employeeList td,
+#employeeBase th,
+#employeeBase td {
+    border: 1px solid;
+    padding: 3px;
+}
+
+#content {
+    width: 960px;
+    min-height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    background: #ffffff;
+}
+
+.selected {
+    background-color: #add8ef;
+}
+
+#buttons {
+    text-align: center;
+    margin-top: 10px;
+}
+
+#employeeList th:nth-child(1), #employeeList td:nth-child(1),
+#employeeList th:nth-child(4), #employeeList td:nth-child(4),
+#employeeBase th:nth-child(1), #employeeBase td:nth-child(1),
+#employeeBase th:nth-child(4), #employeeBase td:nth-child(4) {
+    display: none;
+}
+
+#editElements {
+    padding-left: 10px;
+    margin-top: 10px;
+}
+
+.message {
+    color: #ff0000;
+    font-style: oblique;
+}
+
+#messageNewEmployee {
+    height: 10px;
+}

@@ -1,0 +1,56 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#mainTable {
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+    width: 940px;
+}
+
+#mainTable th {
+    background: #dcdcdc;
+}
+
+#mainTable th, #mainTable td {
+    padding: 3px;
+    border: 1px solid;
+    cursor: default;
+}
+
+input {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+input[type="button"] {
+    margin-top: 10px;
+}
+
+#buttons {
+    text-align: center;
+}
+
+#buttons input[type="button"] {
+    padding: 3px;
+}
+
+#content {
+    width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    background: #ffffff;
+    min-height: 100%;
+}
+
+#mainTable th:nth-child(1), #mainTable tr td:nth-child(1),
+#mainTable th:nth-child(10), #mainTable tr td:nth-child(10) {
+    display: none;
+}
+
+.selected {
+    background-color: #add8ef;
+}

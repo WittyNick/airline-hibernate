@@ -1,0 +1,49 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#content {
+    width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 100%;
+    background: #ffffff;
+}
+
+#content input {
+    padding: 3px;
+}
+
+#content input[type="text"] {
+    margin-bottom: 8px;
+}
+
+#content input[type="password"] {
+    margin-bottom: 5px;
+}
+
+#content input[type="button"] {
+    margin-top: 8px;
+    margin-bottom: 5px;
+}
+
+#fieldsetLogIn {
+    width: 300px;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#buttonSubmit {
+    margin-right: 5px;
+}
+
+.message {
+    color: #ff0000;
+    font-style: oblique;
+}
+
+#fieldsetLogIn span {
+    margin-left: 3px;
+}
