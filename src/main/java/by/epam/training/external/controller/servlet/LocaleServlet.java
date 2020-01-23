@@ -3,6 +3,7 @@ package by.epam.training.external.controller.servlet;
 import by.epam.training.external.config.ConfigurationManager;
 import com.google.gson.Gson;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +16,13 @@ import java.util.Map;
  * When user's session doesn't contains Locale information
  * assume default locale from HttpServletRequest parameter.
  */
+@WebServlet(urlPatterns = {
+        "/locale",
+        "/administrator/locale",
+        "/dispatcher/locale"
+})
 public class LocaleServlet extends HttpServlet {
+    private Gson gson = new Gson();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -25,7 +32,6 @@ public class LocaleServlet extends HttpServlet {
         if (reader != null) {
             json = reader.readLine();
         }
-        Gson gson = new Gson();
         String[] requestParameters = gson.fromJson(json, String[].class);
         Locale locale = findLocale(req);
         Map<String, String> map = manager.getTextMap(locale, requestParameters);

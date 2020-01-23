@@ -1,5 +1,6 @@
 package by.epam.training.external.controller.servlet;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.Locale;
@@ -7,6 +8,11 @@ import java.util.Locale;
 /**
  * The class changes Locale and save user's locale to session and cookies.
  */
+@WebServlet(urlPatterns = {
+        "/locale/change",
+        "/administrator/locale/change",
+        "/dispatcher/locale/change"
+})
 public class LocaleChangeServlet extends HttpServlet {
 
     @Override

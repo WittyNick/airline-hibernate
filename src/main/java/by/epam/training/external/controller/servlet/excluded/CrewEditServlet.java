@@ -36,8 +36,8 @@ public class CrewEditServlet extends HttpServlet {
         if (crewId > 0) {
             Crew crew = service.readCrewById(crewId);
             crewName = crew.getName();
-            employeeListHtml = createTbodyEmployee(crew.getEmployeeList());
-            for (Employee crewEmployee : crew.getEmployeeList()) {
+            employeeListHtml = createTbodyEmployee(crew.getEmployees());
+            for (Employee crewEmployee : crew.getEmployees()) {
                 for (int i = 0; i < employeeBase.size(); i++) {
                     if (crewEmployee.getId() == employeeBase.get(i).getId()) {
                         employeeBase.remove(i);

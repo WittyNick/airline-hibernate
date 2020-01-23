@@ -14,6 +14,7 @@
         <log4j.ver>2.13.0</log4j.ver>
         <postgres.driver.ver>42.2.9</postgres.driver.ver>
         <servlet.ver>4.0.1</servlet.ver>
+        <hibernate.ver>5.4.10.Final</hibernate.ver>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -51,6 +52,13 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgres.driver.ver}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.ver}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->

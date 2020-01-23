@@ -1,29 +1,36 @@
 package by.epam.training.external.controller.servlet;
 
-import by.epam.training.external.config.ConfigurationManager;
+import by.epam.training.external.entity.Crew;
 import by.epam.training.external.entity.Flight;
-import by.epam.training.external.service.Service;
+import by.epam.training.external.entity.dto.FlightDto;
+import by.epam.training.external.service.CrewService;
+import by.epam.training.external.service.FlightService;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Servlet mapping: "/crew/delete"
+ */
+@WebServlet("/crew/delete")
 public class CrewDeleteServlet extends HttpServlet {
-    private static final Logger log = LogManager.getLogger(WelcomeServlet.class);
+    private static final Logger log = LogManager.getLogger(CrewDeleteServlet.class);
+    private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+    private CrewService crewService = new CrewService();
+    private FlightService flightService = new FlightService();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Service service = Service.INSTANCE;
         resp.setContentType("text/plain; charset=UTF-8");
         BufferedReader reader = req.getReader();
         String jsonFlight;
@@ -33,40 +40,17 @@ public class CrewDeleteServlet extends HttpServlet {
             resp.getWriter().print("fail");
             return;
         }
-        Gson gson = new Gson();
-        Flight bobtailFlight = gson.fromJson(jsonFlight, Flight.class);
-        Locale locale = findSessionLocale(req);
-        if (locale == null || !changeDateTimeFormat(bobtailFlight, locale)) {
-            resp.getWriter().print("fail");
-            return;
-        }
-        service.deleteMemberByCrewId(bobtailFlight.getCrew().getId());
-        service.delete(bobtailFlight.getCrew());
-        bobtailFlight.setCrew(null);
-        service.update(bobtailFlight);
-        resp.getWriter().print("ok");
-    }
+        // field Crew crew - contains only crewId
+        FlightDto bobtailFlightDto = gson.fromJson(jsonFlight, FlightDto.class);
+        Flight bobtailFlight = flightService.convertToFlight(bobtailFlightDto, findSessionLocale(req));
 
-    private boolean changeDateTimeFormat(Flight flight, Locale locale) {
-        ConfigurationManager manager = ConfigurationManager.INSTANCE;
-        String fromPattern = manager.getText(locale,"date.format") + ' ' + manager.getText(locale,"time.format");
-        SimpleDateFormat fromFormat = new SimpleDateFormat(fromPattern);
-        SimpleDateFormat toDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat toTimeFormat = new SimpleDateFormat("HH:mm");
-        Date departureDateTime;
-        Date arrivalDateTime;
-        try {
-            departureDateTime = fromFormat.parse(flight.getDepartureDate() + ' ' + flight.getDepartureTime());
-            arrivalDateTime = fromFormat.parse(flight.getArrivalDate() + ' ' + flight.getArrivalTime());
-        } catch (ParseException e) {
-            log.warn(e);
-            return false;
-        }
-        flight.setDepartureDate(toDateFormat.format(departureDateTime));
-        flight.setDepartureTime(toTimeFormat.format(departureDateTime));
-        flight.setArrivalDate(toDateFormat.format(arrivalDateTime));
-        flight.setArrivalTime(toTimeFormat.format(arrivalDateTime));
-        return true;
+        Crew crew = crewService.findCrew(bobtailFlight.getCrew().getId());
+
+        bobtailFlight.setCrew(null);
+        flightService.updateFlight(bobtailFlight);
+
+        crewService.deleteCrew(crew);
+        resp.getWriter().print("ok");
     }
 
     private Locale findSessionLocale(HttpServletRequest req) {

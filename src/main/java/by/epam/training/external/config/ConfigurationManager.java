@@ -1,6 +1,9 @@
 package by.epam.training.external.config;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * Singleton.
@@ -8,31 +11,7 @@ import java.util.*;
  */
 public enum ConfigurationManager {
     INSTANCE;
-    private final String localePropertyFile = "locale";
-    private final String sqlPropertyFile = "sql";
-    private final String databasePropertyFile = "database";
-    private final ResourceBundle sqlBundle = ResourceBundle.getBundle(sqlPropertyFile);
-    private final ResourceBundle databaseBundle = ResourceBundle.getBundle(databasePropertyFile);
-
-    /**
-     * Reads SQL query by key from resource/sql.properties file.
-     *
-     * @param key the key for the desired localized query
-     * @return SQL query string
-     */
-    public String getQuery(String key) {
-        return sqlBundle.getString(key);
-    }
-
-    /**
-     * Reads database connection parameters from resources/database.properties.
-     *
-     * @param key the key for the desired property
-     * @return database connection property
-     */
-    public String getProperty(String key) {
-        return databaseBundle.getString(key);
-    }
+    private final String localePropertyFile = "locale.locale";
 
     /**
      * Reads localized word from resource file and returns in as String.

@@ -1,28 +1,61 @@
 package by.epam.training.external.entity;
 
+import com.google.gson.annotations.Expose;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+@Entity
+@Table(name = "flights")
 public class Flight {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private int id;
+
+    @Column(name = "flight_number")
+    @Expose
     private int flightNumber;
+
+    @Column(name = "start_point")
+    @Expose
     private String startPoint;
+
+    @Column(name = "destination_point")
+    @Expose
     private String destinationPoint;
-    private String departureDate; // yyyy-MM-dd
-    private String departureTime; // HH:mm
-    private String arrivalDate;
-    private String arrivalTime;
+
+    @Column(name = "departure_date_time")
+    @Expose
+    private LocalDateTime departureDateTime;
+
+    @Column(name = "arrival_date_time")
+    @Expose
+    private LocalDateTime arrivalDateTime;
+
+    @Column
+    @Expose
     private String plane;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "crew_id")
+    @Expose
     private Crew crew;
 
     public Flight() {
     }
 
-    public Flight(int flightNumber, String startPoint, String destinationPoint, String departureDate, String departureTime, String arrivalDate, String arrivalTime, String plane) {
+    public Flight(
+            int flightNumber, String startPoint, String destinationPoint,
+            LocalDateTime departureDateTime, LocalDateTime arrivalDateTime,
+            String plane
+    ) {
         this.flightNumber = flightNumber;
         this.startPoint = startPoint;
         this.destinationPoint = destinationPoint;
-        this.departureDate = departureDate;
-        this.departureTime = departureTime;
-        this.arrivalDate = arrivalDate;
-        this.arrivalTime = arrivalTime;
+        this.departureDateTime = departureDateTime;
+        this.arrivalDateTime = arrivalDateTime;
         this.plane = plane;
     }
 
@@ -58,36 +91,20 @@ public class Flight {
         this.destinationPoint = destinationPoint;
     }
 
-    public String getDepartureDate() {
-        return departureDate;
+    public LocalDateTime getDepartureDateTime() {
+        return departureDateTime;
     }
 
-    public void setDepartureDate(String departureDate) {
-        this.departureDate = departureDate;
+    public void setDepartureDateTime(LocalDateTime departureDateTime) {
+        this.departureDateTime = departureDateTime;
     }
 
-    public String getDepartureTime() {
-        return departureTime;
+    public LocalDateTime getArrivalDateTime() {
+        return arrivalDateTime;
     }
 
-    public void setDepartureTime(String departureTime) {
-        this.departureTime = departureTime;
-    }
-
-    public String getArrivalDate() {
-        return arrivalDate;
-    }
-
-    public void setArrivalDate(String arrivalDate) {
-        this.arrivalDate = arrivalDate;
-    }
-
-    public String getArrivalTime() {
-        return arrivalTime;
-    }
-
-    public void setArrivalTime(String arrivalTime) {
-        this.arrivalTime = arrivalTime;
+    public void setArrivalDateTime(LocalDateTime arrivalDateTime) {
+        this.arrivalDateTime = arrivalDateTime;
     }
 
     public String getPlane() {
@@ -109,16 +126,27 @@ public class Flight {
     @Override
     public String toString() {
         return "Flight{" +
-                "id=" + id +
-                ", flightNumber=" + flightNumber +
-                ", startPoint='" + startPoint + '\'' +
-                ", destinationPoint='" + destinationPoint + '\'' +
-                ", departureDate='" + departureDate + '\'' +
-                ", departureTime='" + departureTime + '\'' +
-                ", arrivalDate='" + arrivalDate + '\'' +
-                ", arrivalTime='" + arrivalTime + '\'' +
-                ", plane='" + plane + '\'' +
-                ", crew=" + crew +
+                "id:" + id +
+                ", flightNumber:" + flightNumber +
+                ", startPoint:'" + startPoint + '\'' +
+                ", destinationPoint:'" + destinationPoint + '\'' +
+                ", departureDateTime:" + departureDateTime +
+                ", arrivalDateTime:" + arrivalDateTime +
+                ", plane:'" + plane + '\'' +
+                ", crew:" + crew +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Flight flight = (Flight) o;
+        return id == flight.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

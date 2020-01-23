@@ -1,6 +1,7 @@
 package by.epam.training.external.controller.servlet;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +12,7 @@ import java.io.PrintWriter;
 /**
  * The class provides sign in page and check users login and password.
  */
+@WebServlet("/signin")
 public class SignInServlet extends HttpServlet {
 
     @Override

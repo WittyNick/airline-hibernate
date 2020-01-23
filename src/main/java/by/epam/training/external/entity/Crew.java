@@ -1,19 +1,46 @@
 package by.epam.training.external.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gson.annotations.Expose;
 
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+@Entity
+@Table(name = "crews")
 public class Crew {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private int id;
+
+    @Column
+    @Expose
     private String name;
-    private List<Employee> employeeList;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "crew_employee",
+            joinColumns = @JoinColumn(name = "crew_id"),
+            inverseJoinColumns = @JoinColumn(name = "employee_id")
+    )
+    @Expose
+    private Set<Employee> employees;
+
+    @OneToOne(mappedBy = "crew")
+    private Flight flight; // transient
 
     public Crew() {
-        employeeList = new ArrayList<>();
+        employees = new HashSet<>();
     }
 
     public Crew(String name) {
+        this();
         this.name = name;
+    }
+
+    public void removeEmployee(Employee employee) {
+        employees.remove(employee);
     }
 
     public int getId() {
@@ -32,20 +59,41 @@ public class Crew {
         this.name = name;
     }
 
-    public List<Employee> getEmployeeList() {
-        return employeeList;
+    public Set<Employee> getEmployees() {
+        return employees;
     }
 
-    public void setEmployeeList(List<Employee> employeeList) {
-        this.employeeList = employeeList;
+    public void setEmployees(Set<Employee> employees) {
+        this.employees = employees;
+    }
+
+    public Flight getFlight() {
+        return flight;
+    }
+
+    public void setFlight(Flight flight) {
+        this.flight = flight;
     }
 
     @Override
     public String toString() {
         return "Crew{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", employeeList=" + employeeList +
+                "id:" + id +
+                ", name:'" + name + '\'' +
+                ", employees:" + employees +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Crew crew = (Crew) o;
+        return id == crew.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
