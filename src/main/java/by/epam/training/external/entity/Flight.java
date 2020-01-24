@@ -38,7 +38,7 @@ public class Flight {
     @Expose
     private String plane;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "crew_id")
     @Expose
     private Crew crew;

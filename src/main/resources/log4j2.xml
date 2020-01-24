@@ -14,9 +14,9 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="by.gstu.airline" level="DEBUG" additivity="true">
-            <AppenderRef ref="RollingFileAppender" />
-        </Logger>
+<!--        <Logger name="by.gstu.airline" level="DEBUG" additivity="true">-->
+<!--            <AppenderRef ref="RollingFileAppender" />-->
+<!--        </Logger>-->
         <Root level="ALL">
             <AppenderRef ref="ConsoleAppender" />
         </Root>

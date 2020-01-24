@@ -1,42 +1,33 @@
 package by.epam.training.external.controller.servlet;
 
-import by.epam.training.external.entity.dto.FlightDto;
+import by.epam.training.external.entity.Flight;
 import by.epam.training.external.service.DispatcherService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Locale;
 
-/**
- * Servlet mapping: "/crew/delete"
- */
-@WebServlet("/crew/delete")
-public class CrewDeleteServlet extends HttpServlet {
-    private static final Logger log = LogManager.getLogger(CrewDeleteServlet.class);
+@WebServlet("/dispatcher/save")
+public class CrewSaveServlet extends HttpServlet {
     private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private DispatcherService dispatcherService = new DispatcherService();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("text/plain; charset=UTF-8");
-        String jsonFlightDto = readJson(req);
-        if (jsonFlightDto.isEmpty()) {
+        String jsonFlight = readJson(req);
+        if (jsonFlight.isEmpty()) {
             resp.getWriter().print("fail");
             return;
         }
-//        // field Crew crew - contains only crewId
-        FlightDto bobtailFlightDto = gson.fromJson(jsonFlightDto, FlightDto.class);
-        Locale locale = findSessionLocale(req);
-        dispatcherService.disbandCrew(bobtailFlightDto, locale);
+        // flight: only id and crew: full data (with employees)
+        Flight bobtailFlight = gson.fromJson(jsonFlight, Flight.class);
+        dispatcherService.editCrew(bobtailFlight);
         resp.getWriter().print("ok");
     }
 
@@ -46,10 +37,5 @@ public class CrewDeleteServlet extends HttpServlet {
             return "";
         }
         return reader.readLine();
-    }
-
-    private Locale findSessionLocale(HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        return (Locale) session.getAttribute("locale");
     }
 }

@@ -44,43 +44,70 @@ public class FlightService {
 
     private List<FlightDto> convertToDtoList(List<Flight> flights, Locale locale) {
         final List<FlightDto> flightsDto = new ArrayList<>();
-        flights.forEach(flight -> {
-            FlightDto flightDto = new FlightDto();
-            flightDto.setId(flight.getId());
-            flightDto.setFlightNumber(flight.getFlightNumber());
-            flightDto.setStartPoint(flight.getStartPoint());
-            flightDto.setDestinationPoint(flight.getDestinationPoint());
-            flightDto.setDepartureDate(convertToStringDate(flight.getDepartureDateTime(), locale));
-            flightDto.setDepartureTime(convertToStringTime(flight.getDepartureDateTime(), locale));
-            flightDto.setArrivalDate(convertToStringDate(flight.getArrivalDateTime(), locale));
-            flightDto.setArrivalTime(convertToStringTime(flight.getArrivalDateTime(), locale));
-            flightDto.setPlane(flight.getPlane());
-            flightDto.setCrew(flight.getCrew());
-            flightsDto.add(flightDto);
-        });
+        flights.forEach(flight -> flightsDto.add(convertToDto(flight, locale)));
         return flightsDto;
     }
 
-    private String convertToStringDate(LocalDateTime dateTime, Locale locale) {
-        return dateTime.format(DateTimeFormatter.ofPattern(manager.getText(locale, "date.format")));
+    private FlightDto convertToDto(Flight flight, Locale locale) {
+        String datePattern = getLocaleDatePattern(locale);
+        String timePattern = getLocaleTimePattern(locale);
+        return convertToDto(flight, datePattern, timePattern);
     }
 
-    private String convertToStringTime(LocalDateTime dateTime, Locale locale) {
-        return dateTime.format(DateTimeFormatter.ofPattern(manager.getText(locale, "time.format")));
+    public FlightDto convertToDto(Flight flight, String datePattern, String timePattern) {
+        FlightDto flightDto = new FlightDto();
+        flightDto.setId(flight.getId());
+        flightDto.setFlightNumber(flight.getFlightNumber());
+        flightDto.setStartPoint(flight.getStartPoint());
+        flightDto.setDestinationPoint(flight.getDestinationPoint());
+        flightDto.setDepartureDate(convertLocalDateTimeToString(flight.getDepartureDateTime(), datePattern));
+        flightDto.setDepartureTime(convertLocalDateTimeToString(flight.getDepartureDateTime(), timePattern));
+        flightDto.setArrivalDate(convertLocalDateTimeToString(flight.getArrivalDateTime(), datePattern));
+        flightDto.setArrivalTime(convertLocalDateTimeToString(flight.getArrivalDateTime(), timePattern));
+        flightDto.setPlane(flight.getPlane());
+        flightDto.setCrew(flight.getCrew());
+        return flightDto;
+    }
+
+    public String convertLocalDateTimeToString(LocalDateTime dateTime, String pattern) {
+        return dateTime.format(DateTimeFormatter.ofPattern(pattern));
+    }
+
+    private String getLocaleDatePattern(Locale locale) {
+        return manager.getText(locale, "date.format");
+    }
+
+    private String getLocaleTimePattern(Locale locale) {
+        return manager.getText(locale, "time.format");
     }
 
     public Flight convertToFlight(FlightDto flightDto, Locale locale) {
+        String dateTimePattern = getLocaleDatePattern(locale) + " " + getLocaleTimePattern(locale);
+        return convertToFlight(flightDto, dateTimePattern);
+    }
+
+    public Flight convertToFlight(FlightDto flightDto, String dateTimePattern) {
         Flight flight = new Flight();
         flight.setId(flightDto.getId());
         flight.setFlightNumber(flightDto.getFlightNumber());
         flight.setStartPoint(flightDto.getStartPoint());
         flight.setDestinationPoint(flightDto.getDestinationPoint());
-
-//        flight.setDepartureDateTime(); add this
-//        flight.setArrivalDateTime();
-
+        if (!dateTimePattern.isEmpty()) {
+            flight.setDepartureDateTime(
+                    convertToLocalDateTime(flightDto.getDepartureDate(), flightDto.getDepartureTime(), dateTimePattern)
+            );
+            flight.setArrivalDateTime(
+                    convertToLocalDateTime(flightDto.getArrivalDate(), flightDto.getArrivalTime(), dateTimePattern)
+            );
+        }
         flight.setPlane(flightDto.getPlane());
         flight.setCrew(flightDto.getCrew());
         return flight;
+    }
+
+    private LocalDateTime convertToLocalDateTime(String date, String time, String dateTimePattern) {
+        String dateTime = date + " " + time;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimePattern);
+        return LocalDateTime.parse(dateTime, formatter);
     }
 }
