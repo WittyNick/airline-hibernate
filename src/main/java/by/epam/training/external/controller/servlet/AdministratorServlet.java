@@ -13,6 +13,6 @@ public class AdministratorServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-        req.getRequestDispatcher("html/administrator.html").forward(req, resp);
+        req.getRequestDispatcher("view/administrator.html").forward(req, resp);
     }
 }

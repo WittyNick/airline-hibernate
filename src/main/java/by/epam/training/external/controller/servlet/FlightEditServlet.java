@@ -19,7 +19,7 @@ public class FlightEditServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int flightId = Integer.parseInt(req.getParameter("flightId"));
         Map<String, String> parameterMap = adminService.getPageParameters(flightId);
-        String pageFullPath = getServletContext().getRealPath("html/template/flight-edit.html");
+        String pageFullPath = getServletContext().getRealPath("view/template/flight-edit.html");
         String page = HtmlTemplateEngine.getHtmlPage(pageFullPath, parameterMap);
         resp.setContentType("text/html; charset=UTF-8");
         PrintWriter out = resp.getWriter();

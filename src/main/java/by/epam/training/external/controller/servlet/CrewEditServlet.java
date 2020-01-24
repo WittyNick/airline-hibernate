@@ -19,7 +19,7 @@ public class CrewEditServlet extends HttpServlet {
         int flightId = Integer.parseInt(req.getParameter("flightId"));
         int crewId = Integer.parseInt(req.getParameter("crewId"));
 
-        String pageFullPath = getServletContext().getRealPath("html/template/crew-edit.html");
+        String pageFullPath = getServletContext().getRealPath("view/template/crew-edit.html");
         Map<String, String> parameterMap = dispatcherService.getParameterMap(flightId, crewId);
         String page = HtmlTemplateEngine.getHtmlPage(pageFullPath, parameterMap);
 

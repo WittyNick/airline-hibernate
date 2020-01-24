@@ -7,7 +7,7 @@
     <!-- Welcome page -->
 
     <welcome-file-list>
-        <welcome-file>html/welcome.html</welcome-file>
+        <welcome-file>view/welcome.html</welcome-file>
     </welcome-file-list>
 
     <!-- Session -->

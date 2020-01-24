@@ -1,4 +1,4 @@
-var doc = document;
+let doc = document;
 
 /*
 Send a POST request to the servlet.
@@ -9,8 +9,8 @@ window.onload = function() {
     setUserPageView();
     localizeWelcome();
     doc.getElementById("lang").addEventListener("change", function() {
-        var body = "locale=" + document.getElementById("lang").value;
-        var xhr = new XMLHttpRequest();
+        let body = "locale=" + document.getElementById("lang").value;
+        let xhr = new XMLHttpRequest();
         xhr.open("POST", "locale/change", true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         xhr.onreadystatechange = function() {
@@ -28,18 +28,18 @@ window.onload = function() {
 };
 
 function clearMainTable() {
-    var tableBody = doc.getElementById("tableBody");
+    let tableBody = doc.getElementById("tableBody");
     while (tableBody.hasChildNodes()) {
         tableBody.removeChild(tableBody.lastChild);
     }
 }
 
 function fillMainTable() {
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open("POST", "welcome", true);
     xhr.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
-            var flights = JSON.parse(this.responseText);
+            let flights = JSON.parse(this.responseText);
             fillTableBody(flights);
         }
     };
@@ -47,22 +47,22 @@ function fillMainTable() {
 }
 
 function fillTableBody(flights) {
-    var tableBody = doc.getElementById("tableBody");
+    let tableBody = doc.getElementById("tableBody");
 
-    for (var i = 0; i < flights.length; i++) {
-        var flight = flights[i];
+    for (let i = 0; i < flights.length; i++) {
+        let flight = flights[i];
 
-        var row = doc.createElement("TR");
+        let row = doc.createElement("TR");
         tableBody.appendChild(row);
 
-        var tdFlightNumber = doc.createElement("TD");
-        var tdStartPoint = doc.createElement("TD");
-        var tdDestinationPoint = doc.createElement("TD");
-        var tdDepartureDate = doc.createElement("TD");
-        var tdDepartureTime = doc.createElement("TD");
-        var tdArrivalDate = doc.createElement("TD");
-        var tdArrivalTime = doc.createElement("TD");
-        var tdPlane = doc.createElement("TD");
+        let tdFlightNumber = doc.createElement("TD");
+        let tdStartPoint = doc.createElement("TD");
+        let tdDestinationPoint = doc.createElement("TD");
+        let tdDepartureDate = doc.createElement("TD");
+        let tdDepartureTime = doc.createElement("TD");
+        let tdArrivalDate = doc.createElement("TD");
+        let tdArrivalTime = doc.createElement("TD");
+        let tdPlane = doc.createElement("TD");
         row.appendChild(tdFlightNumber);
         row.appendChild(tdStartPoint);
         row.appendChild(tdDestinationPoint);
@@ -84,13 +84,13 @@ function fillTableBody(flights) {
 }
 
 function setUserPageView() {
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open("POST", "user/validate", true);
     xhr.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
-            var sign = doc.getElementById("sign");
-            var administratorTab = doc.getElementById("administratorTab");
-            var dispatcherTab = doc.getElementById("dispatcherTab");
+            let sign = doc.getElementById("sign");
+            let administratorTab = doc.getElementById("administratorTab");
+            let dispatcherTab = doc.getElementById("dispatcherTab");
             if ("guest" === xhr.responseText) {
                 sign.children[1].classList.add("hidden");
                 administratorTab.classList.add("hidden");
@@ -108,7 +108,7 @@ function setUserPageView() {
 }
 
 function signOut() {
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open("POST", "signout", true);
     xhr.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {

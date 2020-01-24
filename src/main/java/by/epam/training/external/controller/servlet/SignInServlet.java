@@ -17,7 +17,7 @@ public class SignInServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("html/signIn.html").forward(req, resp);
+        req.getRequestDispatcher("view/signIn.html").forward(req, resp);
     }
 
     /**
