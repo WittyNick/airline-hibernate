@@ -1,29 +1,26 @@
-var doc = document;
-var tmpSelectedRow = null;
+let tmpSelectedRow = null;
 
 window.onload = function() {
     localizeAdministrator();
-    doc.getElementById("lang").addEventListener("change", function() {
-        var body = "locale=" + document.getElementById("lang").value;
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "locale/change", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        xhr.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                if ("ok" === xhr.responseText) {
-                    localizeAdministrator();
-                    clearMainTable();
-                    fillMainTable();
-                }
-            }
-        };
-        xhr.send(body);
-    });
-    fillMainTable();
+    doc.getElementById("lang").addEventListener("change", changeLocaleEventHandler);
+    ajaxPost("main", null, createTableBody, true);
 };
 
+function changeLocale(responseText) {
+    if ("ok" === responseText) {
+        localizeAdministrator();
+        clearMainTable();
+        ajaxPost("main", null, createTableBody, true);
+    }
+}
+
+function changeLocaleEventHandler() {
+    let body = "locale=" + document.getElementById("lang").value;
+    ajax("POST", "locale/change", body, changeLocale, true, "application/x-www-form-urlencoded; charset=UTF-8");
+}
+
 function clearMainTable() {
-    var tableBody = doc.getElementById("tableBody");
+    let tableBody = doc.getElementById("tableBody");
     while (tableBody.hasChildNodes()) {
         tableBody.removeChild(tableBody.lastChild);
     }
@@ -33,14 +30,14 @@ function buttonEditAction() {
     if (tmpSelectedRow == null) {
         return;
     }
-    var inputFlightId = doc.getElementById("flightId");
-    var selectedId = tmpSelectedRow.children[0].innerText; // selected flight id
+    let inputFlightId = doc.getElementById("flightId");
+    let selectedId = tmpSelectedRow.children[0].innerText; // selected flight id
     inputFlightId.setAttribute("value", selectedId);
     doc.getElementById("formEdit").submit();
 }
 
 function buttonAddAction() {
-    var inputFlightId = doc.getElementById("flightId");
+    let inputFlightId = doc.getElementById("flightId");
     inputFlightId.setAttribute("value", "0");
     doc.getElementById("formEdit").submit();
 }
@@ -53,8 +50,8 @@ function buttonDeleteAction() {
         return;
     }
 
-    var selectedFlightArray = tmpSelectedRow.children;
-    var flight = {
+    let selectedFlightArray = tmpSelectedRow.children;
+    let flight = {
         "id": Number(selectedFlightArray[0].innerText),
         "flightNumber": Number(selectedFlightArray[1].innerText),
         "startPoint": selectedFlightArray[2].innerText,
@@ -68,58 +65,42 @@ function buttonDeleteAction() {
             "id": Number(selectedFlightArray[9].innerText)
         }
     };
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "flight/delete", true);
-    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-    xhr.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status === 200) {
-            if ("ok" === xhr.responseText) {
-                var tableBody = doc.getElementById("tableBody");
-                tableBody.removeChild(tmpSelectedRow);
-                tmpSelectedRow = null;
-            }
-        }
-    };
-    xhr.send(JSON.stringify(flight));
+    let body = JSON.stringify(flight);
+    ajaxPost("flight/delete", body, deleteFlight, true);
 }
 
-function fillMainTable() {
-    var xhr = new XMLHttpRequest();
-    // xhr.open("POST", "administrator", true);
-    xhr.open("POST", "welcome", true);
-    xhr.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status === 200) {
-            var flights = JSON.parse(this.responseText);
-            createTableBody(flights);
-        }
-    };
-    xhr.send();
+function deleteFlight(responseText) {
+    if ("ok" === responseText) {
+        let tableBody = doc.getElementById("tableBody");
+        tableBody.removeChild(tmpSelectedRow);
+        tmpSelectedRow = null;
+    }
 }
 
-function createTableBody(flights) {
-    var tableBody = doc.getElementById("tableBody");
+function createTableBody(json) {
+    let flights = JSON.parse(json);
+    let tableBody = doc.getElementById("tableBody");
 
-    for (var i = 0; i < flights.length; i++) {
-        var flight = flights[i];
+    for (let i = 0; i < flights.length; i++) {
+        let flight = flights[i];
 
-        var row = doc.createElement("TR");
+        let row = doc.createElement("TR");
         tableBody.appendChild(row);
         row.addEventListener("click", function() {
             selectTableRow(this);
         }, false);
 
-        var tdId = doc.createElement("TD");
-        var tdFlightNumber = doc.createElement("TD");
-        var tdStartPoint = doc.createElement("TD");
-        var tdDestinationPoint = doc.createElement("TD");
-        var tdDepartureDate = doc.createElement("TD");
-        var tdDepartureTime = doc.createElement("TD");
-        var tdArrivalDate = doc.createElement("TD");
-        var tdArrivalTime = doc.createElement("TD");
-        var tdPlane = doc.createElement("TD");
-        var tdCrewId = doc.createElement("TD");
-        var tdCrewName = doc.createElement("TD");
+        let tdId = doc.createElement("TD");
+        let tdFlightNumber = doc.createElement("TD");
+        let tdStartPoint = doc.createElement("TD");
+        let tdDestinationPoint = doc.createElement("TD");
+        let tdDepartureDate = doc.createElement("TD");
+        let tdDepartureTime = doc.createElement("TD");
+        let tdArrivalDate = doc.createElement("TD");
+        let tdArrivalTime = doc.createElement("TD");
+        let tdPlane = doc.createElement("TD");
+        let tdCrewId = doc.createElement("TD");
+        let tdCrewName = doc.createElement("TD");
         row.appendChild(tdId);
         row.appendChild(tdFlightNumber);
         row.appendChild(tdStartPoint);
@@ -159,12 +140,9 @@ function selectTableRow(row) {
 }
 
 function signOut() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "signout", true);
-    xhr.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status === 200) {
-            doc.location.href = "./";
-        }
-    };
-    xhr.send();
+    ajaxPost("signout", null, sighOutAction, true);
+}
+
+function sighOutAction() {
+    doc.location.href = "./";
 }

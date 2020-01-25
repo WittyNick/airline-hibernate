@@ -1,13 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<html>
 <head>
     <meta charset="UTF-8">
     <title>LOGIN</title>
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/signIn.css">
-    <script src="js/locale.js"></script>
-    <script src="js/signIn.js"></script>
+
+    <link rel="shortcut icon" href="${ctx}/img/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="${ctx}/css/common.css">
+    <link rel="stylesheet" href="${ctx}/css/header.css">
+    <link rel="stylesheet" href="${ctx}/css/sign_in.css">
+
+    <script src="${ctx}/js/jquery-3.4.1.js"></script>
+    <script src="${ctx}/js/common.js"></script>
+    <script src="${ctx}/js/locale.js"></script>
+    <script src="${ctx}/js/sign_in.js"></script>
 </head>
 <body>
 <div id="content">
@@ -27,7 +36,7 @@
 
     <fieldset id="fieldsetLogIn">
         <legend id="legendFieldset">Sign In</legend>
-        <form >
+        <form>
             <label id="labelLogin" for="login">login:</label><br>
             <input id="login" name="login" type="text" tabindex="1" autofocus>
             <span id="messageLogin" class="message"></span><br>
@@ -38,7 +47,7 @@
             <div id="messageFail" class="message"></div>
 
             <input id="buttonSubmit" type="button" value="Enter" tabindex="3" autofocus>
-            <input id="buttonCancel" type="button" value="Cancel" onclick="location.href='./'">
+            <input id="buttonCancel" type="button" value="Cancel" onclick="location.href='${ctx}'">
         </form>
     </fieldset>
 </div>

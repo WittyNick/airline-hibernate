@@ -1,16 +1,3 @@
-html, body {
-    height: 100%;
-    margin: 0;
-}
-
-#content {
-    width: 960px;
-    margin-left: auto;
-    margin-right: auto;
-    min-height: 100%;
-    background: #ffffff;
-}
-
 #content input {
     padding: 3px;
 }

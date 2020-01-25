@@ -1,22 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<html>
 <head>
     <meta charset="UTF-8">
     <title>ADMINISTRATOR</title>
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/administrator.css">
-    <script src="js/locale.js"></script>
-    <script src="js/administrator.js"></script>
-</head>
 
+    <link rel="shortcut icon" href="${ctx}/img/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="${ctx}/css/common.css">
+    <link rel="stylesheet" href="${ctx}/css/header.css">
+    <link rel="stylesheet" href="${ctx}/css/administrator.css">
+
+    <script src="${ctx}/js/jquery-3.4.1.js"></script>
+    <script src="${ctx}/js/common.js"></script>
+    <script src="${ctx}/js/locale.js"></script>
+    <script src="${ctx}/js/administrator.js"></script>
+</head>
 <body>
 <div id="content">
     <div id="empty"></div>
     <table id="header">
         <tr>
             <td id="space"></td>
-            <td id="mainTab" class="tab"><a href="">main</a></td>
+            <td id="mainTab" class="tab"><a href="${ctx}">main</a></td>
             <td id="administratorTab" class="picketTab">administrator</td>
             <td id="locale">
                 <select id="lang">

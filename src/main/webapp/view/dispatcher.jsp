@@ -1,22 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<html>
 <head>
     <meta charset="UTF-8">
     <title>DISPATCHER</title>
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/dispatcher.css">
-    <script src="js/locale.js"></script>
-    <script src="js/dispatcher.js"></script>
+
+    <link rel="shortcut icon" href="${ctx}/img/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="${ctx}/css/common.css">
+    <link rel="stylesheet" href="${ctx}/css/header.css">
+    <link rel="stylesheet" href="${ctx}/css/dispatcher.css">
+
+    <script src="${ctx}/js/jquery-3.4.1.js"></script>
+    <script src="${ctx}/js/common.js"></script>
+    <script src="${ctx}/js/locale.js"></script>
+    <script src="${ctx}/js/dispatcher.js"></script>
 </head>
 <body>
-
 <div id="content">
     <div id="empty"></div>
     <table id="header">
         <tr>
             <td id="space"></td>
-            <td id="mainTab" class="tab"><a href="">main</a></td>
+            <td id="mainTab" class="tab"><a href="${ctx}">main</a></td>
             <td id="dispatcherTab" class="picketTab">dispatcher</td>
             <td id="locale">
                 <select id="lang">
@@ -60,6 +68,5 @@
         </form>
     </div>
 </div>
-
 </body>
 </html>

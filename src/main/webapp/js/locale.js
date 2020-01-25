@@ -1,9 +1,9 @@
-var responseObject;
-var messages;
+let responseObject;
+let messages;
 
-// ---------- welcome.html ----------
-function localizeWelcome() {
-    var requestArray = [
+// ---------- main.jsp ----------
+function localizeMain() {
+    let requestArray = [
         "lang",
         "main",
         "administrator",
@@ -20,10 +20,13 @@ function localizeWelcome() {
         "arrival_time",
         "plane"
     ];
-    ajaxPost(requestArray, applyLocaleWelcome);
+    ajaxPost("locale", JSON.stringify(requestArray), applyLocaleMain, true);
 }
 
-function applyLocaleWelcome() {
+function applyLocaleMain(responseText) {
+    responseObject = JSON.parse(responseText);
+    selectActualLangOption();
+
     doc.getElementById("mainTab").innerHTML = responseObject["main"];
     doc.getElementById("administratorTab").firstElementChild.innerText = responseObject["administrator"];
     doc.getElementById("dispatcherTab").firstElementChild.innerText = responseObject["dispatcher"];
@@ -31,7 +34,7 @@ function applyLocaleWelcome() {
     doc.getElementById("sign").children[1].innerText = responseObject["sign_out"];
     doc.getElementById("content").lang = responseObject["lang"];
     doc.getElementById("tableCaption").innerText = responseObject["schedule"];
-    var headColumns = doc.getElementById("hatRow").children;
+    let headColumns = doc.getElementById("hatRow").children;
     headColumns[0].innerHTML = responseObject["number"];
     headColumns[1].innerHTML = responseObject["from"];
     headColumns[2].innerHTML = responseObject["to"];
@@ -42,9 +45,9 @@ function applyLocaleWelcome() {
     headColumns[7].innerHTML = responseObject["plane"];
 }
 
-// ---------- signIn.html ----------
+// ---------- sign_in.jsp ----------
 function localizeSignIn() {
-    var requestArray = [
+    let requestArray = [
         "lang",
         "legend_sign_in",
         "login",
@@ -55,10 +58,13 @@ function localizeSignIn() {
         "message.sign_in.password",
         "message.sign_in.fail"
     ];
-    ajaxPost(requestArray, applyLocaleSignIn);
+    ajaxPost("locale", JSON.stringify(requestArray), applyLocaleSignIn, true);
 }
 
-function applyLocaleSignIn() {
+function applyLocaleSignIn(responseText) {
+    responseObject = JSON.parse(responseText);
+    selectActualLangOption();
+
     doc.getElementById("content").lang = responseObject["lang"];
     doc.getElementById("legendFieldset").innerText = responseObject["legend_sign_in"];
     doc.getElementById("labelLogin").innerText = responseObject["login"];
@@ -75,9 +81,9 @@ function applyLocaleSignIn() {
     setMessages();
 }
 
-// ---------- administrator.html ----------
+// ---------- administrator.jsp ----------
 function localizeAdministrator() {
-    var requestArray = [
+    let requestArray = [
         "lang",
         "main",
         "administrator",
@@ -97,16 +103,19 @@ function localizeAdministrator() {
         "flight.delete",
         "flight.confirm.delete"
     ];
-    ajaxPost(requestArray, applyLocaleAdministrator);
+    ajaxPost("locale", JSON.stringify(requestArray), applyLocaleAdministrator, true);
 }
 
-function applyLocaleAdministrator() {
+function applyLocaleAdministrator(responseText) {
+    responseObject = JSON.parse(responseText);
+    selectActualLangOption();
+
     doc.getElementById("mainTab").firstElementChild.innerHTML = responseObject["main"];
     doc.getElementById("administratorTab").innerText = responseObject["administrator"];
     doc.getElementById("sign").firstElementChild.innerText = responseObject["sign_out"];
     doc.getElementById("content").lang = responseObject["lang"];
     doc.getElementById("tableCaption").innerText = responseObject["flights"];
-    var headColumns = document.getElementById("hatRow").children;
+    let headColumns = document.getElementById("hatRow").children;
     headColumns[1].innerHTML = responseObject["number"];
     headColumns[2].innerHTML = responseObject["from"];
     headColumns[3].innerHTML = responseObject["to"];
@@ -123,7 +132,7 @@ function applyLocaleAdministrator() {
 
 // ---------- FlightEditServlet ----------
 function localizeFlightEdit() {
-    var requestArray = [
+    let requestArray = [
         "lang",
         "main",
         "administrator",
@@ -142,10 +151,13 @@ function localizeFlightEdit() {
         "message.flight.edit.illegal_value",
         "message.flight.edit.fill_date_time"
     ];
-    ajaxPost(requestArray, applyFlightEdit);
+    ajaxPost("locale", JSON.stringify(requestArray), applyFlightEdit, true);
 }
 
-function applyFlightEdit() {
+function applyFlightEdit(responseText) {
+    responseObject = JSON.parse(responseText);
+    selectActualLangOption();
+
     doc.getElementById("mainTab").firstElementChild.innerHTML = responseObject["main"];
     doc.getElementById("administratorTab").innerText = responseObject["administrator"];
     doc.getElementById("sign").firstElementChild.innerText = responseObject["sign_out"];
@@ -170,9 +182,9 @@ function applyFlightEdit() {
     setMessages();
 }
 
-// ---------- dispatcher.html ----------
+// ---------- dispatcher.jsp ----------
 function localizeDispatcher() {
-    var requestArray = [
+    let requestArray = [
         "lang",
         "main",
         "dispatcher",
@@ -191,16 +203,19 @@ function localizeDispatcher() {
         "crew.delete",
         "crew.confirm.delete"
     ];
-    ajaxPost(requestArray, applyLocaleDispatcher);
+    ajaxPost("locale", JSON.stringify(requestArray), applyLocaleDispatcher, true);
 }
 
-function applyLocaleDispatcher() {
+function applyLocaleDispatcher(responseText) {
+    responseObject = JSON.parse(responseText);
+    selectActualLangOption();
+
     doc.getElementById("mainTab").firstElementChild.innerHTML = responseObject["main"];
     doc.getElementById("dispatcherTab").innerText = responseObject["dispatcher"];
     doc.getElementById("sign").firstElementChild.innerText = responseObject["sign_out"];
     doc.getElementById("content").lang = responseObject["lang"];
     doc.getElementById("tableCaption").innerText = responseObject["crews"];
-    var headColumns = document.getElementById("hatRow").children;
+    let headColumns = document.getElementById("hatRow").children;
     headColumns[1].innerHTML = responseObject["number"];
     headColumns[2].innerHTML = responseObject["from"];
     headColumns[3].innerHTML = responseObject["to"];
@@ -216,7 +231,7 @@ function applyLocaleDispatcher() {
 
 // ---------- CrewEditServlet ----------
 function localizeCrewEdit() {
-    var requestArray = [
+    let requestArray = [
         "lang",
         "main",
         "dispatcher",
@@ -246,10 +261,13 @@ function localizeCrewEdit() {
         "message.crew.edit.enter_employee_surname",
         "message.crew.edit.enter_employee_name_and_surname"
     ];
-    ajaxPost(requestArray, applyCrewEdit);
+    ajaxPost("locale", JSON.stringify(requestArray), applyCrewEdit, true);
 }
 
-function applyCrewEdit() {
+function applyCrewEdit(responseText) {
+    responseObject = JSON.parse(responseText);
+    selectActualLangOption();
+
     doc.getElementById("mainTab").firstElementChild.innerHTML = responseObject["main"];
     doc.getElementById("dispatcherTab").innerText = responseObject["dispatcher"];
     doc.getElementById("sign").firstElementChild.innerText = responseObject["sign_out"];
@@ -257,11 +275,11 @@ function applyCrewEdit() {
     doc.getElementById("labelName").innerText = responseObject["crew.edit.crew_name"];
     doc.getElementById("captionEmployeeList").innerText = responseObject["crew.edit.employee_list"];
     doc.getElementById("captionEmployeeBase").innerText = responseObject["crew.edit.employee_base"];
-    var headEmployeeListColumns = doc.getElementById("hatEmployeeListRow").children;
+    let headEmployeeListColumns = doc.getElementById("hatEmployeeListRow").children;
     headEmployeeListColumns[1].innerHTML = responseObject["name"];
     headEmployeeListColumns[2].innerHTML = responseObject["surname"];
     headEmployeeListColumns[4].innerHTML = responseObject["position"];
-    var headEmployeeBaseColumns = doc.getElementById("hatEmployeeBaseRow").children;
+    let headEmployeeBaseColumns = doc.getElementById("hatEmployeeBaseRow").children;
     headEmployeeBaseColumns[1].innerHTML = responseObject["name"];
     headEmployeeBaseColumns[2].innerHTML = responseObject["surname"];
     headEmployeeBaseColumns[4].innerHTML = responseObject["position"];
@@ -274,17 +292,17 @@ function applyCrewEdit() {
     doc.getElementById("buttonFireEmployee").value = responseObject["crew.edit.fire_employee"];
     doc.getElementById("buttonSave").value = responseObject["crew.edit.save"];
     doc.getElementById("buttonCancel").value = responseObject["crew.edit.cancel"];
-    var employeeListRows = doc.getElementById("employeeListBody").children;
-    for (var i = 0; i < employeeListRows.length; i++) {
+    let employeeListRows = doc.getElementById("employeeListBody").children;
+    for (let i = 0; i < employeeListRows.length; i++) {
         employeeListRows[i].children[4].innerText = responseObject[employeeListRows[i].children[3].innerText.toLowerCase()];
     }
-    var employeeBaseRows = doc.getElementById("employeeBaseBody").children;
-    for (var j = 0; j < employeeBaseRows.length; j++) {
+    let employeeBaseRows = doc.getElementById("employeeBaseBody").children;
+    for (let j = 0; j < employeeBaseRows.length; j++) {
         employeeBaseRows[j].children[4].innerText = responseObject[employeeBaseRows[j].children[3].innerText.toLowerCase()];
     }
-    var positionSelectOptions = doc.getElementById("newEmployeePosition").children;
-    for (var k = 0; k < positionSelectOptions.length; k++) {
-        var option = positionSelectOptions[k];
+    let positionSelectOptions = doc.getElementById("newEmployeePosition").children;
+    for (let k = 0; k < positionSelectOptions.length; k++) {
+        let option = positionSelectOptions[k];
         option.innerHTML = responseObject[positionSelectOptions[k].value.toLowerCase()];
     }
 
@@ -299,25 +317,12 @@ function applyCrewEdit() {
 }
 
 // --------------------
-function ajaxPost(requestObject, callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "locale", true);
-    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-    xhr.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status === 200) {
-            responseObject = JSON.parse(xhr.responseText);
-            callback();
-            selectActualLangOption();
-        }
-    };
-    xhr.send(JSON.stringify(requestObject));
-}
 
 function selectActualLangOption() {
-    var lang = doc.getElementById("lang");
+    let lang = doc.getElementById("lang");
     if ("default" === lang.value) {
-        var langOptions = lang.children;
-        for (var i = 1; i < langOptions.length; i++) {
+        let langOptions = lang.children;
+        for (let i = 1; i < langOptions.length; i++) {
             if (langOptions[i].value === responseObject["locale"]) {
                 langOptions[i].selected = true;
                 return;

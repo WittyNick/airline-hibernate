@@ -1,28 +1,24 @@
-var doc = document;
-
 window.onload = function() {
     localizeFlightEdit();
-    doc.getElementById("lang").addEventListener("change", function() {
-        var body = "locale=" + document.getElementById("lang").value;
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "locale/change", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        xhr.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                if ("ok" === xhr.responseText) {
-                    localizeFlightEdit();
-                }
-            }
-        };
-        xhr.send(body);
-    });
+    doc.getElementById("lang").addEventListener("change", changeLocaleEventHandler);
 };
+
+function changeLocaleEventHandler() {
+    let body = "locale=" + document.getElementById("lang").value;
+    ajax("POST", "locale/change", body, changeLocale, true, "application/x-www-form-urlencoded; charset=UTF-8");
+}
+
+function changeLocale(responseText) {
+    if ("ok" === responseText) {
+        localizeFlightEdit();
+    }
+}
 
 function buttonSaveAction() {
     if (!isValid()) {
         return;
     }
-    var flight = {
+    let flight = {
         "id": Number(doc.getElementById("id").value),
         "flightNumber": Number(doc.getElementById("flightNumber").value),
         "startPoint": doc.getElementById("startPoint").value,
@@ -36,48 +32,41 @@ function buttonSaveAction() {
             "id": Number(doc.getElementById("crewId").value)
         }
     };
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "../administrator/save", true);
-    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-    xhr.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status === 200) {
-            if (xhr.responseText === "ok") {
-                doc.location.href = "../administrator";
-            }
-        }
-    };
-    var json = JSON.stringify(flight);
-    xhr.send(json);
+    let json = JSON.stringify(flight);
+    ajaxPost("../administrator/save", json, onSaveAction, true);
+}
+
+function onSaveAction(responseText) {
+    if (responseText === "ok") {
+        doc.location.href = "../administrator";
+    }
 }
 
 function signOut() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "../signout", true);
-    xhr.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status === 200) {
-            doc.location.href = "../";
-        }
-    };
-    xhr.send();
+    ajaxPost("../signout", null, sighOutAction, true);
 }
 
-var messageFlightNumberIndex = 0;
-var messageStartPointIndex = 0;
-var messageDestinationPointIndex = 0;
-var messageDepartureDateTimeIndex = 0;
-var messageArrivalDateTimeIndex = 0;
-var messagePlaneIndex = 0;
+function sighOutAction() {
+    doc.location.href = "../";
+}
+
+let messageFlightNumberIndex = 0;
+let messageStartPointIndex = 0;
+let messageDestinationPointIndex = 0;
+let messageDepartureDateTimeIndex = 0;
+let messageArrivalDateTimeIndex = 0;
+let messagePlaneIndex = 0;
 
 function isValid() {
-    var valid = true;
-    var inputFlightNumber = doc.getElementById("flightNumber");
-    var inputStartPoint = doc.getElementById("startPoint");
-    var inputDestinationPoint = doc.getElementById("destinationPoint");
-    var inputDepartureDate = doc.getElementById("departureDate");
-    var inputDepartureTime = doc.getElementById("departureTime");
-    var inputArrivalDate = doc.getElementById("arrivalDate");
-    var inputArrivalTime = doc.getElementById("arrivalTime");
-    var inputPlane = doc.getElementById("plane");
+    let valid = true;
+    let inputFlightNumber = doc.getElementById("flightNumber");
+    let inputStartPoint = doc.getElementById("startPoint");
+    let inputDestinationPoint = doc.getElementById("destinationPoint");
+    let inputDepartureDate = doc.getElementById("departureDate");
+    let inputDepartureTime = doc.getElementById("departureTime");
+    let inputArrivalDate = doc.getElementById("arrivalDate");
+    let inputArrivalTime = doc.getElementById("arrivalTime");
+    let inputPlane = doc.getElementById("plane");
 
     if (!inputFlightNumber.value.trim()) {
         messageFlightNumberIndex = 1;
@@ -123,18 +112,6 @@ function isValid() {
     setMessages();
     return valid;
 }
-
-// function isValidDate(value) {
-//     var arrDate = value.split("-");
-//     var yyyy = Number(arrDate[0]);
-//     var mm = Number(arrDate[1]) - 1;
-//     var dd = Number(arrDate[2]);
-//     var date = new Date(yyyy, mm, dd);
-//     console.log(date.getFullYear());
-//     console.log(date.getMonth());
-//     console.log(date.getDate());
-//     return (date.getFullYear() === yyyy && date.getMonth() === mm && date.getDate() === dd);
-// }
 
 function setMessages() {
     doc.getElementById("messageFlightNumber").innerHTML = messages[messageFlightNumberIndex];

@@ -1,26 +1,23 @@
-let doc = document;
 let tmpSelectedCrewRow = null;
 let tmpSelectedBaseRow = null;
 
 window.onload = function() {
     localizeCrewEdit();
-    doc.getElementById("lang").addEventListener("change", function() {
-        let body = "locale=" + document.getElementById("lang").value;
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "locale/change", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        xhr.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                if ("ok" === xhr.responseText) {
-                    localizeCrewEdit();
-                }
-            }
-        };
-        xhr.send(body);
-    });
+    doc.getElementById("lang").addEventListener("change", changeLocaleEventHandler);
     addEmployeeListSelect();
     addEmployeeBaseSelect();
 };
+
+function changeLocaleEventHandler() {
+    let body = "locale=" + document.getElementById("lang").value;
+    ajax("POST", "locale/change", body, changeLocale, true, "application/x-www-form-urlencoded; charset=UTF-8");
+}
+
+function changeLocale(responseText) {
+    if ("ok" === responseText) {
+        localizeCrewEdit();
+    }
+}
 
 function addEmployeeListSelect() {
     let employeeListRows = doc.getElementById("employeeListBody").children;
@@ -99,36 +96,36 @@ function engageEmployeeAction() {
         "surname": inputNewEmployeeSurname.value,
         "position": doc.getElementById("newEmployeePosition").value
     };
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", "employee/add", true);
-    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-    xhr.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status === 200) {
-            let employeeResponse = JSON.parse(xhr.responseText);
-            let row = doc.createElement("TR");
-            let tdId = doc.createElement("TD");
-            let tdName = doc.createElement("TD");
-            let tdSurname = doc.createElement("TD");
-            let tdPositionEnum = doc.createElement("TD");
-            let tdPosition = doc.createElement("TD");
-            row.appendChild(tdId);
-            row.appendChild(tdName);
-            row.appendChild(tdSurname);
-            row.appendChild(tdPositionEnum);
-            row.appendChild(tdPosition);
-            tdId.innerText = employeeResponse["id"];
-            tdName.innerText = employeeResponse["name"];
-            tdSurname.innerText = employeeResponse["surname"];
-            tdPositionEnum.innerText = employeeResponse["position"];
-            tdPosition.innerText = responseObject[employeeResponse["position"].toLowerCase()]; // localization
-            row.addEventListener("click", onEmployeeListRowClick);
-            doc.getElementById("employeeListBody").appendChild(row);
-            row.click();
-            inputNewEmployeeName.value = "";
-            inputNewEmployeeSurname.value = "";
-        }
-    };
-    xhr.send(JSON.stringify(employeeSend));
+    let json = JSON.stringify(employeeSend);
+    ajaxPost("employee/add", json, onEngageEmployeeCallback, true);
+}
+
+function onEngageEmployeeCallback(responseText) {
+    let inputNewEmployeeName = doc.getElementById("newEmployeeName");
+    let inputNewEmployeeSurname = doc.getElementById("newEmployeeSurname");
+
+    let employeeResponse = JSON.parse(responseText);
+    let row = doc.createElement("TR");
+    let tdId = doc.createElement("TD");
+    let tdName = doc.createElement("TD");
+    let tdSurname = doc.createElement("TD");
+    let tdPositionEnum = doc.createElement("TD");
+    let tdPosition = doc.createElement("TD");
+    row.appendChild(tdId);
+    row.appendChild(tdName);
+    row.appendChild(tdSurname);
+    row.appendChild(tdPositionEnum);
+    row.appendChild(tdPosition);
+    tdId.innerText = employeeResponse["id"];
+    tdName.innerText = employeeResponse["name"];
+    tdSurname.innerText = employeeResponse["surname"];
+    tdPositionEnum.innerText = employeeResponse["position"];
+    tdPosition.innerText = responseObject[employeeResponse["position"].toLowerCase()]; // localization
+    row.addEventListener("click", onEmployeeListRowClick);
+    doc.getElementById("employeeListBody").appendChild(row);
+    row.click();
+    inputNewEmployeeName.value = "";
+    inputNewEmployeeSurname.value = "";
 }
 
 function fireEmployeeAction() {
@@ -145,19 +142,16 @@ function fireEmployeeAction() {
         "surname": employeeChildren[2].innerText,
         "position": employeeChildren[3].innerText
     };
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", "employee/delete", true);
-    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-    xhr.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status === 200) {
-            if ("ok" === xhr.responseText) {
-                let employeeBaseBody = doc.getElementById("employeeBaseBody");
-                employeeBaseBody.removeChild(tmpSelectedBaseRow);
-                tmpSelectedBaseRow = null;
-            }
-        }
-    };
-    xhr.send(JSON.stringify(employee));
+    let json = JSON.stringify(employee);
+    ajaxPost("employee/delete", json, onFireEmployeeAction, true);
+}
+
+function onFireEmployeeAction(responseText) {
+    if ("ok" === responseText) {
+        let employeeBaseBody = doc.getElementById("employeeBaseBody");
+        employeeBaseBody.removeChild(tmpSelectedBaseRow);
+        tmpSelectedBaseRow = null;
+    }
 }
 
 function saveAction() {
@@ -183,29 +177,22 @@ function saveAction() {
         };
         bobtailFlight["crew"]["employees"].push(employee);
     }
-    console.log(JSON.stringify(bobtailFlight));
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", "save", true);
-    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-    xhr.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status === 200) {
-            if ("ok" === xhr.responseText) {
-                doc.location.href = "../dispatcher";
-            }
-        }
-    };
-    xhr.send(JSON.stringify(bobtailFlight));
+    let json = JSON.stringify(bobtailFlight);
+    ajaxPost("save", json, onSaveAction, true);
+}
+
+function onSaveAction(responseText) {
+    if ("ok" === responseText) {
+        doc.location.href = "../dispatcher";
+    }
 }
 
 function signOut() {
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", "../signout", true);
-    xhr.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status === 200) {
-            doc.location.href = "../";
-        }
-    };
-    xhr.send();
+    ajaxPost("../signout", null, onSignOutAction, true);
+}
+
+function onSignOutAction() {
+    doc.location.href = "../";
 }
 
 let messageCrewNameIndex = 0;

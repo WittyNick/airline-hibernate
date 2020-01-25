@@ -5,6 +5,7 @@ import by.epam.training.external.service.FlightService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,11 +15,18 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-@WebServlet("/welcome")
-public class WelcomeServlet extends HttpServlet {
+@WebServlet("/main")
+public class MainServlet extends HttpServlet {
     private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-
     private FlightService flightService = new FlightService();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Locale locale = findSessionLocale(req);
+        List<FlightDto> flightsDto = flightService.getAllFlightsDto(locale);
+        req.setAttribute("flights", flightsDto);
+        req.getRequestDispatcher("view/main.jsp").forward(req, resp);
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {

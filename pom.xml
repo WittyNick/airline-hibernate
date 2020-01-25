@@ -15,6 +15,8 @@
         <postgres.driver.ver>42.2.9</postgres.driver.ver>
         <servlet.ver>4.0.1</servlet.ver>
         <hibernate.ver>5.4.10.Final</hibernate.ver>
+        <jsp.ver>2.3.3</jsp.ver>
+        <tablibs.ver>1.2.5</tablibs.ver>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -67,6 +69,21 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.ver}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax.servlet.jsp/javax.servlet.jsp-api -->
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>javax.servlet.jsp-api</artifactId>
+            <version>${jsp.ver}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.taglibs/taglibs-standard-impl -->
+        <dependency>
+            <groupId>org.apache.taglibs</groupId>
+            <artifactId>taglibs-standard-impl</artifactId>
+            <version>${tablibs.ver}</version>
         </dependency>
     </dependencies>
 </project>

@@ -1,13 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>AIRLINE</title>
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/welcome.css">
-    <script src="js/locale.js"></script>
-    <script src="js/welcome.js"></script>
+    <title>MAIN</title>
+    <link rel="shortcut icon" href="${ctx}/img/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="${ctx}/css/common.css">
+    <link rel="stylesheet" href="${ctx}/css/header.css">
+    <link rel="stylesheet" href="${ctx}/css/main.css">
+
+    <script src="${ctx}/js/jquery-3.4.1.js"></script>
+    <script src="${ctx}/js/common.js"></script>
+    <script src="${ctx}/js/locale.js"></script>
+    <script src="${ctx}/js/main.js"></script>
 </head>
 <body>
 <div id="content">
