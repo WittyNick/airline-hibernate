@@ -3,6 +3,7 @@ package by.epam.training.external.service;
 import by.epam.training.external.config.ConfigurationManager;
 import by.epam.training.external.dao.DaoFactory;
 import by.epam.training.external.dao.FlightDao;
+import by.epam.training.external.entity.Crew;
 import by.epam.training.external.entity.Flight;
 import by.epam.training.external.entity.dto.FlightDto;
 
@@ -101,7 +102,11 @@ public class FlightService {
             );
         }
         flight.setPlane(flightDto.getPlane());
-        flight.setCrew(flightDto.getCrew());
+
+        Crew crew = flightDto.getCrew();
+        if (crew.getId() > 0) {
+            flight.setCrew(crew);
+        }
         return flight;
     }
 
