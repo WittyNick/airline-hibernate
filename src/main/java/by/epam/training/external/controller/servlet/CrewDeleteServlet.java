@@ -1,11 +1,9 @@
 package by.epam.training.external.controller.servlet;
 
-import by.epam.training.external.entity.dto.FlightDto;
+import by.epam.training.external.dto.FlightDto;
 import by.epam.training.external.service.DispatcherService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +19,6 @@ import java.util.Locale;
  */
 @WebServlet("/crew/delete")
 public class CrewDeleteServlet extends HttpServlet {
-    private static final Logger log = LogManager.getLogger(CrewDeleteServlet.class);
     private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private DispatcherService dispatcherService = new DispatcherService();
 

@@ -1,6 +1,6 @@
 package by.epam.training.external.controller.servlet;
 
-import by.epam.training.external.entity.dto.FlightDto;
+import by.epam.training.external.dto.FlightDto;
 import by.epam.training.external.service.AdministratorService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

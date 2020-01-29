@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
@@ -10,13 +9,10 @@
     <link rel="shortcut icon" href="${ctx}/img/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="${ctx}/css/common.css">
-    <link rel="stylesheet" href="${ctx}/css/header.css">
     <link rel="stylesheet" href="${ctx}/css/dispatcher.css">
 
-    <script src="${ctx}/js/jquery-3.4.1.js"></script>
-    <script src="${ctx}/js/common.js"></script>
-    <script src="${ctx}/js/locale.js"></script>
-    <script src="${ctx}/js/dispatcher.js"></script>
+    <script defer src="${ctx}/js/common.js"></script>
+    <script defer src="${ctx}/js/dispatcher.js"></script>
 </head>
 <body>
 <div id="content">
@@ -60,7 +56,7 @@
         </tbody>
     </table>
     <div id="buttons">
-        <form id="formEdit" method="POST" action="dispatcher/edit">
+        <form id="formEdit" method="POST" action="${ctx}/dispatcher/edit">
             <input id="flightId" type="hidden" name="flightId">
             <input id="crewId" type="hidden" name="crewId">
             <input id="buttonEdit" type="button" value="Edit Crew" onclick="buttonEditAction()">

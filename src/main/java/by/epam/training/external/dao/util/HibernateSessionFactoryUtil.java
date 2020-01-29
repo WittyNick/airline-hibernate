@@ -1,4 +1,4 @@
-package by.epam.training.external.dao.hibernate.util;
+package by.epam.training.external.dao.util;
 
 import by.epam.training.external.entity.Crew;
 import by.epam.training.external.entity.Employee;

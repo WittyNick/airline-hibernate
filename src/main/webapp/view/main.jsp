@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
@@ -9,23 +8,21 @@
     <link rel="shortcut icon" href="${ctx}/img/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="${ctx}/css/common.css">
-    <link rel="stylesheet" href="${ctx}/css/header.css">
     <link rel="stylesheet" href="${ctx}/css/main.css">
 
-    <script src="${ctx}/js/jquery-3.4.1.js"></script>
-    <script src="${ctx}/js/common.js"></script>
-    <script src="${ctx}/js/locale.js"></script>
-    <script src="${ctx}/js/main.js"></script>
+    <script defer src="${ctx}/js/common.js"></script>
+    <script defer src="${ctx}/js/main.js"></script>
 </head>
 <body>
+<span id="ctx" class="hidden">${ctx}</span>
 <div id="content">
     <div id="empty"></div>
     <table id="header">
         <tr>
             <td id="space"></td>
             <td id="mainTab" class="picketTab">main</td>
-            <td id="administratorTab" class="tab"><a href="administrator">administrator</a></td>
-            <td id="dispatcherTab" class="tab"><a href="dispatcher">dispatcher</a></td>
+            <td id="administratorTab" class="tab"><a href="${ctx}/administrator">administrator</a></td>
+            <td id="dispatcherTab" class="tab"><a href="${ctx}/dispatcher">dispatcher</a></td>
             <td id="locale">
                 <select id="lang">
                     <option value="default">default</option>
@@ -34,7 +31,7 @@
                 </select>
             </td>
             <td id="sign">
-                <span class="pseudolink" onclick="location.href='signin'">sign in</span>
+                <span class="pseudolink" onclick="location.href='${ctx}/signin'">sign in</span>
                 <span class="pseudolink" onclick="signOut()">sign out</span>
             </td>
         </tr>

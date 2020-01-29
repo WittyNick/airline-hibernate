@@ -1,4 +1,19 @@
 let doc = document;
+let ctx = doc.getElementById("ctx").innerHTML;
+
+include(ctxUrl("/js/jquery-3.4.1.js"));
+include(ctxUrl("/js/locale.js"));
+
+function include(src) {
+    let script = doc.createElement("script");
+    script.src = src;
+    // script.async = false; // script.defer = true;
+    doc.body.append(script);
+}
+
+function ctxUrl(url) {
+    return ctx + url;
+}
 
 function ajax(method, url, requestBody, callback, async, contentType) {
     let xhr = new XMLHttpRequest();

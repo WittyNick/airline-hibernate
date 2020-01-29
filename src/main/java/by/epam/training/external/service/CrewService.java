@@ -7,7 +7,7 @@ import by.epam.training.external.entity.Crew;
 import java.util.List;
 
 public class CrewService {
-    private CrewDao crewDao = DaoFactory.getDaoFactory().getCrewDao();
+    private CrewDao crewDao = DaoFactory.getInstance().getCrewDao();
 
     public void saveCrew(Crew crew) {
         crewDao.save(crew);
@@ -28,6 +28,4 @@ public class CrewService {
     public void deleteCrew(Crew crew) {
         crewDao.delete(crew);
     }
-
-
 }

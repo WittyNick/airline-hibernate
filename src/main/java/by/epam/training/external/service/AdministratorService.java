@@ -1,8 +1,8 @@
 package by.epam.training.external.service;
 
+import by.epam.training.external.dto.FlightDto;
 import by.epam.training.external.entity.Crew;
 import by.epam.training.external.entity.Flight;
-import by.epam.training.external.entity.dto.FlightDto;
 
 import java.util.HashMap;
 import java.util.Map;

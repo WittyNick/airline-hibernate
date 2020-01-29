@@ -7,7 +7,7 @@ import by.epam.training.external.entity.Employee;
 import java.util.List;
 
 public class EmployeeService {
-    private EmployeeDao employeeDao = DaoFactory.getDaoFactory().getEmployeeDao();
+    private EmployeeDao employeeDao = DaoFactory.getInstance().getEmployeeDao();
 
     public void saveEmployee(Employee employee) {
         employeeDao.save(employee);

@@ -1,6 +1,6 @@
 package by.epam.training.external.controller.servlet;
 
-import by.epam.training.external.config.ConfigurationManager;
+import by.epam.training.external.locale.LocaleManager;
 import com.google.gson.Gson;
 
 import javax.servlet.annotation.WebServlet;
@@ -26,7 +26,7 @@ public class LocaleServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        ConfigurationManager manager = ConfigurationManager.INSTANCE;
+        LocaleManager manager = LocaleManager.INSTANCE;
         BufferedReader reader = req.getReader();
         String json = "";
         if (reader != null) {

@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
@@ -10,15 +9,13 @@
     <link rel="shortcut icon" href="${ctx}/img/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="${ctx}/css/common.css">
-    <link rel="stylesheet" href="${ctx}/css/header.css">
     <link rel="stylesheet" href="${ctx}/css/sign_in.css">
 
-    <script src="${ctx}/js/jquery-3.4.1.js"></script>
-    <script src="${ctx}/js/common.js"></script>
-    <script src="${ctx}/js/locale.js"></script>
-    <script src="${ctx}/js/sign_in.js"></script>
+    <script defer src="${ctx}/js/common.js"></script>
+    <script defer src="${ctx}/js/sign_in.js"></script>
 </head>
 <body>
+<span id="ctx" class="hidden">${ctx}</span>
 <div id="content">
     <div id="empty"></div>
     <table id="header">

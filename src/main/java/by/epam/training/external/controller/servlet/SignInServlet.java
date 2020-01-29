@@ -33,10 +33,6 @@ public class SignInServlet extends HttpServlet {
 
         String login = req.getParameter("login");
         String password = req.getParameter("password");
-
-//        login = "dispatcher";
-//        password = "dispatcher";
-
         if ("admin".equals(login) && "admin".equals(password)) {
             session.setAttribute("role", "administrator");
             printWriter.print("administrator");
