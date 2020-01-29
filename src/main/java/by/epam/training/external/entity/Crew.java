@@ -17,7 +17,7 @@ public class Crew {
 
     @Column
     @Expose
-    private String name;
+    private String name = "";
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "crew_employee",

@@ -4,15 +4,15 @@ let ctx = doc.getElementById("ctx").innerHTML;
 include(ctxUrl("/js/jquery-3.4.1.js"));
 include(ctxUrl("/js/locale.js"));
 
+function ctxUrl(url) {
+    return ctx + url;
+}
+
 function include(src) {
     let script = doc.createElement("script");
     script.src = src;
     // script.async = false; // script.defer = true;
     doc.body.append(script);
-}
-
-function ctxUrl(url) {
-    return ctx + url;
 }
 
 function ajax(method, url, requestBody, callback, async, contentType) {
@@ -27,10 +27,6 @@ function ajax(method, url, requestBody, callback, async, contentType) {
         }
     };
     xhr.send(requestBody);
-}
-
-function ajaxGet(url, callback, async) {
-    ajax("GET", url, null, callback, async, null);
 }
 
 function ajaxPost(url, requestBody, callback, async) {

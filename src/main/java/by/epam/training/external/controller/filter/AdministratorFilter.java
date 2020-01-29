@@ -10,7 +10,7 @@ import java.io.IOException;
 @WebFilter(urlPatterns = {
         "/administrator/*",
         "/view/administrator.jsp",
-        "/view/flight_edit.html"
+        "/view/flight_edit.jsp"
 })
 public class AdministratorFilter implements Filter {
     @Override

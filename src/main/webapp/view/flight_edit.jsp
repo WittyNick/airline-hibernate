@@ -36,26 +36,26 @@
         </tr>
     </table>
     <form id="formMain">
-        <input id="id" type="hidden" value="#id">
-        <input id="crewId" type="hidden" value="#crew.id">
+        <input id="id" type="hidden" value="${flight.getId()}">
+        <input id="crewId" type="hidden" value="${flight.getCrew().getId()}">
         <label id="labelFlightNumber" for="flightNumber">flight number:</label><br>
-        <input id="flightNumber" type="text" value="#flight.number">
+        <input id="flightNumber" type="text" value="<c:if test="${flight.getFlightNumber() > 0}">${flight.getFlightNumber()}</c:if>">
         <span id="messageFlightNumber" class="message"></span><br>
         <label id="labelStartPoint" for="startPoint">from:</label><br>
-        <input id="startPoint" type="text" maxlength="30ch" value="#start.point">
+        <input id="startPoint" type="text" maxlength="30ch" value="${flight.getStartPoint()}">
         <span id="messageStartPoint" class="message"></span><br>
         <label id="labelDestinationPoint" for="destinationPoint">to:</label><br>
-        <input id="destinationPoint" type="text" maxlength="30ch" value="#destination.point">
+        <input id="destinationPoint" type="text" maxlength="30ch" value="${flight.getDestinationPoint()}">
         <span id="messageDestinationPoint" class="message"></span>
         <table>
             <tr>
                 <td>
                     <label id="labelDepartureDate" for="departureDate">departure date:</label><br>
-                    <input id="departureDate" type="date" value="#departure.date">
+                    <input id="departureDate" type="date" value="${flight.getDepartureDate()}">
                 </td>
                 <td>
                     <label id="labelDepartureTime" for="departureTime">time:</label><br>
-                    <input id="departureTime" type="time" value="#departure.time">
+                    <input id="departureTime" type="time" value="${flight.getDepartureTime()}">
                 </td>
                 <td>
                     <br><span id="messageDepartureDateTime" class="message"></span>
@@ -64,11 +64,11 @@
             <tr>
                 <td>
                     <label id="labelArrivalDate" for="arrivalDate">arrival date:</label><br>
-                    <input id="arrivalDate" type="date" value="#arrival.date">
+                    <input id="arrivalDate" type="date" value="${flight.getArrivalDate()}">
                 </td>
                 <td>
                     <label id="labelArrivalTime" for="arrivalTime">time:</label><br>
-                    <input id="arrivalTime" type="time" value="#arrival.time">
+                    <input id="arrivalTime" type="time" value="${flight.getArrivalTime()}">
                 </td>
                 <td>
                     <br><span id="messageArrivalDateTime" class="message"></span>
@@ -76,7 +76,7 @@
             </tr>
         </table>
         <label id="labelPlane" for="plane">plane:</label><br>
-        <input id="plane" type="text" maxlength="20ch" value="#plane">
+        <input id="plane" type="text" maxlength="20ch" value="${flight.getPlane()}">
         <span id="messagePlane" class="message"></span><br>
         <input id="buttonSave" type="button" value="Save" onclick="buttonSaveAction()">
         <input id="buttonCancel" type="button" value="Cancel" onclick="location.href='${ctx}/administrator'">

@@ -17,46 +17,44 @@ public class CrewDao implements GenericDao<Crew> {
 
     @Override
     public void save(Crew crew) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.save(crew);
-        tx.commit();
-        session.close();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.save(crew);
+            tx.commit();
+        }
     }
 
     @Override
     public Crew findById(int id) {
-        Session session = sessionFactory.openSession();
-        Crew crew = session.get(Crew.class, id);
-        session.close();
-        return crew;
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(Crew.class, id);
+        }
     }
 
     @Override
     @SuppressWarnings(value = "unchecked")
     public List<Crew> findAll() {
-        Session session = sessionFactory.openSession();
-        Query<Crew> query = session.createQuery("FROM Crew");
-        List<Crew> crews = query.list();
-        session.close();
-        return crews;
+        try (Session session = sessionFactory.openSession()) {
+            Query<Crew> query = session.createQuery("FROM Crew");
+            return query.list();
+        }
     }
 
     @Override
     public void update(Crew crew) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.update(crew);
-        tx.commit();
-        session.close();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.update(crew);
+            tx.commit();
+        }
     }
 
     @Override
     public void delete(Crew crew) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.delete(crew);
-        tx.commit();
-        session.close();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.delete(crew);
+            tx.commit();
+        }
     }
 }

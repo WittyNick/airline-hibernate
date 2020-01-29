@@ -10,7 +10,7 @@ import java.io.IOException;
 @WebFilter(urlPatterns = {
         "/dispatcher/*",
         "/view/dispatcher.jsp",
-        "/view/crew_edit.html"
+        "/view/crew_edit.jsp"
 })
 public class DispatcherFilter implements Filter {
     @Override

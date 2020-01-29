@@ -17,46 +17,44 @@ public class EmployeeDao implements GenericDao<Employee> {
 
     @Override
     public void save(Employee employee) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.save(employee);
-        tx.commit();
-        session.close();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.save(employee);
+            tx.commit();
+        }
     }
 
     @Override
     public Employee findById(int id) {
-        Session session = sessionFactory.openSession();
-        Employee employee = session.get(Employee.class, id);
-        session.close();
-        return employee;
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(Employee.class, id);
+        }
     }
 
     @Override
     @SuppressWarnings(value = "unchecked")
     public List<Employee> findAll() {
-        Session session = sessionFactory.openSession();
-        Query<Employee> query = session.createQuery("FROM Employee");
-        List<Employee> employees = query.list();
-        session.close();
-        return employees;
+        try (Session session = sessionFactory.openSession()) {
+            Query<Employee> query = session.createQuery("FROM Employee");
+            return query.list();
+        }
     }
 
     @Override
     public void update(Employee employee) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.update(employee);
-        tx.commit();
-        session.close();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.update(employee);
+            tx.commit();
+        }
     }
 
     @Override
     public void delete(Employee employee) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.delete(employee);
-        tx.commit();
-        session.close();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.delete(employee);
+            tx.commit();
+        }
     }
 }

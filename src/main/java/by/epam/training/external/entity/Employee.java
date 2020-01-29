@@ -17,11 +17,11 @@ public class Employee {
 
     @Column
     @Expose
-    private String name;
+    private String name = "";
 
     @Column
     @Expose
-    private String surname;
+    private String surname = "";
 
     @Column
     @Expose

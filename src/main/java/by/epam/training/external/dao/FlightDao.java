@@ -17,46 +17,44 @@ public class FlightDao implements GenericDao<Flight> {
 
     @Override
     public void save(Flight flight) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.save(flight);
-        tx.commit();
-        session.close();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.save(flight);
+            tx.commit();
+        }
     }
 
     @Override
     public Flight findById(int id) {
-        Session session = sessionFactory.openSession();
-        Flight flight = session.get(Flight.class, id);
-        session.close();
-        return flight;
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(Flight.class, id);
+        }
     }
 
     @Override
     @SuppressWarnings(value = "unchecked")
     public List<Flight> findAll() {
-        Session session = sessionFactory.openSession();
-        Query<Flight> query = session.createQuery("FROM Flight");
-        List<Flight> flights = query.list();
-        session.close();
-        return flights;
+        try (Session session = sessionFactory.openSession()) {
+            Query<Flight> query = session.createQuery("FROM Flight");
+            return query.list();
+        }
     }
 
     @Override
     public void update(Flight flight) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.update(flight);
-        tx.commit();
-        session.close();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.update(flight);
+            tx.commit();
+        }
     }
 
     @Override
     public void delete(Flight flight) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.delete(flight);
-        tx.commit();
-        session.close();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.delete(flight);
+            tx.commit();
+        }
     }
 }
