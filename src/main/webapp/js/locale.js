@@ -1,9 +1,10 @@
 let responseObject;
+let dictionary;
 let messages;
 
 // ---------- main.jsp ----------
 function localizeMain() {
-    let requestArray = [
+    let words = [
         "lang",
         "main",
         "administrator",
@@ -20,29 +21,38 @@ function localizeMain() {
         "arrival_time",
         "plane"
     ];
-    ajaxPost("locale", JSON.stringify(requestArray), applyLocaleMain, true);
+    $.ajax({
+        type: "POST",
+        url: "locale",
+        data: JSON.stringify(words),
+        contentType: "json",
+        dataType: "json",
+        success: applyLocaleMain
+    });
 }
 
-function applyLocaleMain(responseText) {
-    responseObject = JSON.parse(responseText);
-    selectActualLangOption();
+function applyLocaleMain(response) {
+    responseObject = response; // deprecated
+    dictionary = response;
+    setLocaleSelector();
 
-    doc.getElementById("mainTab").innerHTML = responseObject["main"];
-    doc.getElementById("administratorTab").firstElementChild.innerText = responseObject["administrator"];
-    doc.getElementById("dispatcherTab").firstElementChild.innerText = responseObject["dispatcher"];
-    doc.getElementById("sign").children[0].innerText = responseObject["sign_in"];
-    doc.getElementById("sign").children[1].innerText = responseObject["sign_out"];
-    doc.getElementById("content").lang = responseObject["lang"];
-    doc.getElementById("tableCaption").innerText = responseObject["schedule"];
-    let headColumns = doc.getElementById("hatRow").children;
-    headColumns[0].innerHTML = responseObject["number"];
-    headColumns[1].innerHTML = responseObject["from"];
-    headColumns[2].innerHTML = responseObject["to"];
-    headColumns[3].innerHTML = responseObject["departure_date"];
-    headColumns[4].innerHTML = responseObject["departure_time"];
-    headColumns[5].innerHTML = responseObject["arrival_date"];
-    headColumns[6].innerHTML = responseObject["arrival_time"];
-    headColumns[7].innerHTML = responseObject["plane"];
+    $("#mainTab").html(dictionary["main"]);
+    $("#administratorTab a:first-child").html(dictionary["administrator"]);
+    $("#dispatcherTab a:first-child").html(dictionary["dispatcher"]);
+    let spanArr = $("#sign").children();
+    $(spanArr).eq(0).html(dictionary["sign_in"]);
+    $(spanArr).eq(1).html(dictionary["sign_out"]);
+    $("#content").attr("lang", dictionary["lang"]);
+    $("tableCaption").html(dictionary["schedule"]);
+    let headColumns = $("#hatRow").children();
+    $(headColumns).eq(0).html(dictionary["number"]);
+    $(headColumns).eq(1).html(dictionary["from"]);
+    $(headColumns).eq(2).html(dictionary["to"]);
+    $(headColumns).eq(3).html(dictionary["departure_date"]);
+    $(headColumns).eq(4).html(dictionary["departure_time"]);
+    $(headColumns).eq(5).html(dictionary["arrival_date"]);
+    $(headColumns).eq(6).html(dictionary["arrival_time"]);
+    $(headColumns).eq(7).html(dictionary["plane"]);
 }
 
 // ---------- sign_in.jsp ----------
@@ -63,7 +73,7 @@ function localizeSignIn() {
 
 function applyLocaleSignIn(responseText) {
     responseObject = JSON.parse(responseText);
-    selectActualLangOption();
+    setLocaleSelector();
 
     doc.getElementById("content").lang = responseObject["lang"];
     doc.getElementById("legendFieldset").innerText = responseObject["legend_sign_in"];
@@ -108,7 +118,7 @@ function localizeAdministrator() {
 
 function applyLocaleAdministrator(responseText) {
     responseObject = JSON.parse(responseText);
-    selectActualLangOption();
+    setLocaleSelector();
 
     doc.getElementById("mainTab").firstElementChild.innerHTML = responseObject["main"];
     doc.getElementById("administratorTab").innerText = responseObject["administrator"];
@@ -156,7 +166,7 @@ function localizeFlightEdit() {
 
 function applyFlightEdit(responseText) {
     responseObject = JSON.parse(responseText);
-    selectActualLangOption();
+    setLocaleSelector();
 
     doc.getElementById("mainTab").firstElementChild.innerHTML = responseObject["main"];
     doc.getElementById("administratorTab").innerText = responseObject["administrator"];
@@ -208,7 +218,7 @@ function localizeDispatcher() {
 
 function applyLocaleDispatcher(responseText) {
     responseObject = JSON.parse(responseText);
-    selectActualLangOption();
+    setLocaleSelector();
 
     doc.getElementById("mainTab").firstElementChild.innerHTML = responseObject["main"];
     doc.getElementById("dispatcherTab").innerText = responseObject["dispatcher"];
@@ -266,7 +276,7 @@ function localizeCrewEdit() {
 
 function applyCrewEdit(responseText) {
     responseObject = JSON.parse(responseText);
-    selectActualLangOption();
+    setLocaleSelector();
 
     doc.getElementById("mainTab").firstElementChild.innerHTML = responseObject["main"];
     doc.getElementById("dispatcherTab").innerText = responseObject["dispatcher"];
@@ -318,7 +328,7 @@ function applyCrewEdit(responseText) {
 
 // --------------------
 
-function selectActualLangOption() {
+function setLocaleSelector() {
     let lang = doc.getElementById("lang");
     if ("default" === lang.value) {
         let langOptions = lang.children;

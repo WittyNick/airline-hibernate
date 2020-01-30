@@ -21,7 +21,7 @@ function fillTableFlights() {
         url: "main",
         contentType: false,
         dataType: "json",
-        success: fillTableFlightsHandler
+        success: addTableFlightsContent
     });
 }
 
@@ -43,56 +43,30 @@ function changeLocale(responseText) {
     }
 }
 
-function fillTableFlightsHandler(flights) {
-    let tableBody = document.getElementById("tableBody");
-
-    for (let i = 0; i < flights.length; i++) {
-        let flight = flights[i];
-
-        let row = document.createElement("TR");
-        tableBody.appendChild(row);
-
-        let tdFlightNumber = document.createElement("TD");
-        let tdStartPoint = document.createElement("TD");
-        let tdDestinationPoint = document.createElement("TD");
-        let tdDepartureDate = document.createElement("TD");
-        let tdDepartureTime = document.createElement("TD");
-        let tdArrivalDate = document.createElement("TD");
-        let tdArrivalTime = document.createElement("TD");
-        let tdPlane = document.createElement("TD");
-        row.appendChild(tdFlightNumber);
-        row.appendChild(tdStartPoint);
-        row.appendChild(tdDestinationPoint);
-        row.appendChild(tdDepartureDate);
-        row.appendChild(tdDepartureTime);
-        row.appendChild(tdArrivalDate);
-        row.appendChild(tdArrivalTime);
-        row.appendChild(tdPlane);
-
-        tdFlightNumber.innerHTML = flight["flightNumber"];
-        tdStartPoint.innerHTML = flight["startPoint"];
-        tdDestinationPoint.innerHTML = flight["destinationPoint"];
-        tdDepartureDate.innerHTML = flight["departureDate"];
-        tdDepartureTime.innerHTML = flight["departureTime"];
-        tdArrivalDate.innerHTML = flight["arrivalDate"];
-        tdArrivalTime.innerHTML = flight["arrivalTime"];
-        tdPlane.innerHTML = flight["plane"];
-    }
+function addTableFlightsContent(flights) {
+    let rows = "";
+    flights.forEach(function(flight) {
+        rows += "<tr><td>" + flight.flightNumber +
+            "</td><td>" + flight.startPoint +
+            "</td><td>" + flight.destinationPoint +
+            "</td><td>" + flight.departureDate +
+            "</td><td>" + flight.departureTime +
+            "</td><td>" + flight.arrivalDate +
+            "</td><td>" + flight.arrivalTime +
+            "</td><td>" + flight.plane + "</td></tr>";
+    });
+    $("#tableBody").html(rows);
 }
 
 function setPageView(responseText) {
-    let sign = doc.getElementById("sign");
-    let administratorTab = doc.getElementById("administratorTab");
-    let dispatcherTab = doc.getElementById("dispatcherTab");
-
-    if ("guest" === responseText) {
-        sign.children[0].classList.remove("hidden");
-    } else if ("administrator" === responseText) {
-        sign.children[1].classList.remove("hidden");
-        administratorTab.classList.remove("hidden");
+    if ("administrator" === responseText) {
+        $("#sign").children().eq(1).removeClass("hidden");
+        $("#administratorTab").removeClass("hidden");
     } else if ("dispatcher" === responseText) {
-        sign.children[1].classList.remove("hidden");
-        dispatcherTab.classList.remove("hidden");
+        $("#sign").children().eq(1).removeClass("hidden");
+        $("#dispatcherTab").removeClass("hidden");
+    } else { // "guest"
+        $("#sign").children().eq(0).removeClass("hidden");
     }
 }
 
@@ -101,22 +75,14 @@ function signOut() {
         type: "POST",
         url: "signout",
         contentType: false,
-        success: signOutHandler
+        success: setPageViewGuest
     });
-    // ajaxPost("signout", null, signOutHandler, true);
 }
 
-function signOutHandler() {
-    resetPageView();
-    // validateUser();
-
-    // ajaxPost("user/validate", null, setPageView, true);
-}
-
-function resetPageView() {
-    let sign = $("#sign");
-    $(sign).children().addClass("hidden");
-    $(sign).children([0]).removeClass("hidden");
+function setPageViewGuest() {
+    let spanArr = $("#sign").children();
+    $(spanArr).eq(1).addClass("hidden");
+    $(spanArr).eq(0).removeClass("hidden");
     $("#administratorTab").addClass("hidden");
     $("#dispatcherTab").addClass("hidden");
 }
