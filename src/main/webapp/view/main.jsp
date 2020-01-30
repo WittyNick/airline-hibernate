@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="${ctx}/css/common.css">
     <link rel="stylesheet" href="${ctx}/css/main.css">
 
+    <script defer src="${ctx}/js/jquery-3.4.1.js"></script>
     <script defer src="${ctx}/js/common.js"></script>
+    <script defer src="${ctx}/js/locale.js"></script>
     <script defer src="${ctx}/js/main.js"></script>
 </head>
 <body>
@@ -21,8 +23,8 @@
         <tr>
             <td id="space"></td>
             <td id="mainTab" class="picketTab">main</td>
-            <td id="administratorTab" class="tab"><a href="${ctx}/administrator">administrator</a></td>
-            <td id="dispatcherTab" class="tab"><a href="${ctx}/dispatcher">dispatcher</a></td>
+            <td id="administratorTab" class="tab hidden"><a href="${ctx}/administrator">administrator</a></td>
+            <td id="dispatcherTab" class="tab hidden"><a href="${ctx}/dispatcher">dispatcher</a></td>
             <td id="locale">
                 <select id="lang">
                     <option value="default">default</option>
@@ -31,8 +33,8 @@
                 </select>
             </td>
             <td id="sign">
-                <span class="pseudolink" onclick="location.href='${ctx}/signin'">sign in</span>
-                <span class="pseudolink" onclick="signOut()">sign out</span>
+                <span class="pseudolink hidden" onclick="location.href='${ctx}/signin'">sign in</span>
+                <span class="pseudolink hidden" onclick="signOut()">sign out</span>
             </td>
         </tr>
     </table>

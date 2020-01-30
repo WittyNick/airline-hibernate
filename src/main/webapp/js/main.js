@@ -1,53 +1,65 @@
-/*
-Send a POST request to the servlet.
-Gets an array of JSON Flights.
-Calls the fillTable() function.
-*/
-window.onload = function() {
-    ajaxPost("user/validate", null, setUserPageView, true);
+$(document).ready(function() {
+    validateUser();
     localizeMain();
-    doc.getElementById("lang").addEventListener("change", changeLocaleEventHandler);
-    ajaxPost("main", null, fillTableBody, true);
-};
+    $("#lang").on("change", changeLocaleEventHandler);
+    fillTableFlights();
+});
+
+function validateUser() {
+    $.ajax({
+        type: "POST",
+        url: "user/validate",
+        contentType: false,
+        dataType: "text",
+        success: setPageView
+    });
+}
+
+function fillTableFlights() {
+    $.ajax({
+        type: "POST",
+        url: "main",
+        contentType: false,
+        dataType: "json",
+        success: fillTableFlightsHandler
+    });
+}
 
 function changeLocaleEventHandler() {
-    let body = "locale=" + document.getElementById("lang").value;
-    ajax("POST", "locale/change", body, changeLocale, true, "application/x-www-form-urlencoded; charset=UTF-8");
+    $.ajax({
+        type: "POST",
+        url: "locale/change",
+        data: "locale=" + $("#lang").val(),
+        dataType: "text",
+        success: changeLocale
+    });
 }
 
 function changeLocale(responseText) {
     if ("ok" === responseText) {
         localizeMain();
-        clearMainTable();
-        ajaxPost("main", null, fillTableBody, true);
+        $("#tableBody").empty();
+        fillTableFlights();
     }
 }
 
-function clearMainTable() {
-    let tableBody = doc.getElementById("tableBody");
-    while (tableBody.hasChildNodes()) {
-        tableBody.removeChild(tableBody.lastChild);
-    }
-}
-
-function fillTableBody(json) {
-    let flights = JSON.parse(json);
-    let tableBody = doc.getElementById("tableBody");
+function fillTableFlightsHandler(flights) {
+    let tableBody = document.getElementById("tableBody");
 
     for (let i = 0; i < flights.length; i++) {
         let flight = flights[i];
 
-        let row = doc.createElement("TR");
+        let row = document.createElement("TR");
         tableBody.appendChild(row);
 
-        let tdFlightNumber = doc.createElement("TD");
-        let tdStartPoint = doc.createElement("TD");
-        let tdDestinationPoint = doc.createElement("TD");
-        let tdDepartureDate = doc.createElement("TD");
-        let tdDepartureTime = doc.createElement("TD");
-        let tdArrivalDate = doc.createElement("TD");
-        let tdArrivalTime = doc.createElement("TD");
-        let tdPlane = doc.createElement("TD");
+        let tdFlightNumber = document.createElement("TD");
+        let tdStartPoint = document.createElement("TD");
+        let tdDestinationPoint = document.createElement("TD");
+        let tdDepartureDate = document.createElement("TD");
+        let tdDepartureTime = document.createElement("TD");
+        let tdArrivalDate = document.createElement("TD");
+        let tdArrivalTime = document.createElement("TD");
+        let tdPlane = document.createElement("TD");
         row.appendChild(tdFlightNumber);
         row.appendChild(tdStartPoint);
         row.appendChild(tdDestinationPoint);
@@ -68,28 +80,43 @@ function fillTableBody(json) {
     }
 }
 
-function setUserPageView(responseText) {
+function setPageView(responseText) {
     let sign = doc.getElementById("sign");
     let administratorTab = doc.getElementById("administratorTab");
     let dispatcherTab = doc.getElementById("dispatcherTab");
+
     if ("guest" === responseText) {
-        sign.children[1].classList.add("hidden");
-        administratorTab.classList.add("hidden");
-        dispatcherTab.classList.add("hidden");
+        sign.children[0].classList.remove("hidden");
     } else if ("administrator" === responseText) {
-        sign.children[0].classList.add("hidden");
-        dispatcherTab.classList.add("hidden");
+        sign.children[1].classList.remove("hidden");
+        administratorTab.classList.remove("hidden");
     } else if ("dispatcher" === responseText) {
-        sign.children[0].classList.add("hidden");
-        administratorTab.classList.add("hidden");
+        sign.children[1].classList.remove("hidden");
+        dispatcherTab.classList.remove("hidden");
     }
 }
 
 function signOut() {
-    ajaxPost("signout", null, signOutAction, true);
+    $.ajax({
+        type: "POST",
+        url: "signout",
+        contentType: false,
+        success: signOutHandler
+    });
+    // ajaxPost("signout", null, signOutHandler, true);
 }
 
-function signOutAction() {
-    doc.getElementById("sign").children[0].classList.remove("hidden");
-    ajaxPost("user/validate", null, setUserPageView, true);
+function signOutHandler() {
+    resetPageView();
+    // validateUser();
+
+    // ajaxPost("user/validate", null, setPageView, true);
+}
+
+function resetPageView() {
+    let sign = $("#sign");
+    $(sign).children().addClass("hidden");
+    $(sign).children([0]).removeClass("hidden");
+    $("#administratorTab").addClass("hidden");
+    $("#dispatcherTab").addClass("hidden");
 }

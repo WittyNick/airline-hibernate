@@ -11,7 +11,9 @@
     <link rel="stylesheet" href="${ctx}/css/common.css">
     <link rel="stylesheet" href="${ctx}/css/sign_in.css">
 
+    <script defer src="${ctx}/js/jquery-3.4.1.js"></script>
     <script defer src="${ctx}/js/common.js"></script>
+    <script defer src="${ctx}/js/locale.js"></script>
     <script defer src="${ctx}/js/sign_in.js"></script>
 </head>
 <body>
