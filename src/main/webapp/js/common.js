@@ -1,11 +1,5 @@
 let doc = document;
 
-let ctx = $("#ctx").html();
-
-function ctxUrl(url) {
-    return ctx + url;
-}
-
 function ajax(method, url, requestBody, callback, async, contentType) {
     let xhr = new XMLHttpRequest();
     xhr.open(method, url, async);

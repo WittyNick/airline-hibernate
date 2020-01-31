@@ -17,7 +17,6 @@
     <script defer src="${ctx}/js/sign_in.js"></script>
 </head>
 <body>
-<span id="ctx" class="hidden">${ctx}</span>
 <div id="content">
     <div id="empty"></div>
     <table id="header">
