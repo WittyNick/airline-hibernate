@@ -1,6 +1,6 @@
 let tmpSelectedRow = null;
 
-$(document).ready(function() {
+$(document).ready(function () {
     localizeAdministrator();
     $('#lang').on('change', changeLocaleEventHandler);
     fillTableFlights();
@@ -55,19 +55,19 @@ function buttonDeleteAction() {
     if (!confirm(dict['flight.confirm.delete'])) {
         return;
     }
-    let selectedFlightArray = $(tmpSelectedRow).children();
+    let $selectedFlightCells = $(tmpSelectedRow).children();
     let flight = {
-        'id': +$(selectedFlightArray).eq(0).html(), // + converts string to int or float, better than use Number(...)
-        'flightNumber': +$(selectedFlightArray).eq(1).html(),
-        'startPoint': $(selectedFlightArray).eq(2).html(),
-        'destinationPoint': $(selectedFlightArray).eq(3).html(),
-        'departureDate': $(selectedFlightArray).eq(4).html(),
-        'departureTime': $(selectedFlightArray).eq(5).html(),
-        'arrivalDate': $(selectedFlightArray).eq(6).html(),
-        'arrivalTime': $(selectedFlightArray).eq(7).html(),
-        'plane': $(selectedFlightArray).eq(8).html(),
+        'id': +$selectedFlightCells.eq(0).html(), // + converts string to int or float, better than use Number(...)
+        'flightNumber': +$selectedFlightCells.eq(1).html(),
+        'startPoint': $selectedFlightCells.eq(2).html(),
+        'destinationPoint': $selectedFlightCells.eq(3).html(),
+        'departureDate': $selectedFlightCells.eq(4).html(),
+        'departureTime': $selectedFlightCells.eq(5).html(),
+        'arrivalDate': $selectedFlightCells.eq(6).html(),
+        'arrivalTime': $selectedFlightCells.eq(7).html(),
+        'plane': $selectedFlightCells.eq(8).html(),
         'crew': {
-            'id': +$(selectedFlightArray).eq(9).html()
+            'id': +$selectedFlightCells.eq(9).html()
         }
     };
     $.ajax({
@@ -75,28 +75,19 @@ function buttonDeleteAction() {
         url: 'flight/delete',
         data: JSON.stringify(flight),
         contentType: 'json',
-        dataType: 'text',
-        success: deleteFlight
+        success: function () {
+            $(tmpSelectedRow).remove();
+            tmpSelectedRow = null;
+        }
     });
 }
 
-function deleteFlight(responseText) {
-    if ('ok' === responseText) {
-        $(tmpSelectedRow).remove();
-        tmpSelectedRow = null;
-    }
-}
-
 function createTableBody(flights) {
-    let tableBody = $('#tableBody');
-
-    flights.forEach(function(flight) {
-        let row = $.create('tr').on('click', function() {
+    $(flights).each(function (index, flight) {
+        let $row = $('<tr>').on('click', function () {
             selectTableRow(this);
         });
-        $(tableBody).append(row);
-
-        let columns = '<td>' + flight.id +
+        let cells = '<td>' + flight.id +
             '</td><td>' + flight.flightNumber +
             '</td><td>' + flight.startPoint +
             '</td><td>' + flight.destinationPoint +
@@ -105,69 +96,16 @@ function createTableBody(flights) {
             '</td><td>' + flight.arrivalDate +
             '</td><td>' + flight.arrivalTime +
             '</td><td>' + flight.plane;
-
-        if (flight.hasOwnProperty('crew')) {
-            tdCrewId.innerHTML = flight['crew']['id'];
-            tdCrewName.innerHTML = flight['crew']['name'];
+        if ('crew' in flight) {
+            cells += '</td><td>' + flight.crew.id +
+                '</td><td>' + flight.crew.name + '</td>';
         } else {
-            tdCrewId.innerHTML = '0';
+            cells += '</td><td>0</td><td></td>';
         }
-
+        $row.html(cells);
+        $('#tableBody').append($row);
     });
 }
-
-// function createTableBody(flights) {
-//     let tableBody = doc.getElementById('tableBody');
-//
-//     for (let i = 0; i < flights.length; i++) {
-//         let flight = flights[i];
-//
-//         let row = doc.createElement('TR');
-//         tableBody.appendChild(row);
-//         row.addEventListener('click', function() {
-//             selectTableRow(this);
-//         }, false);
-//
-//         let tdId = doc.createElement('TD');
-//         let tdFlightNumber = doc.createElement('TD');
-//         let tdStartPoint = doc.createElement('TD');
-//         let tdDestinationPoint = doc.createElement('TD');
-//         let tdDepartureDate = doc.createElement('TD');
-//         let tdDepartureTime = doc.createElement('TD');
-//         let tdArrivalDate = doc.createElement('TD');
-//         let tdArrivalTime = doc.createElement('TD');
-//         let tdPlane = doc.createElement('TD');
-//         let tdCrewId = doc.createElement('TD');
-//         let tdCrewName = doc.createElement('TD');
-//         row.appendChild(tdId);
-//         row.appendChild(tdFlightNumber);
-//         row.appendChild(tdStartPoint);
-//         row.appendChild(tdDestinationPoint);
-//         row.appendChild(tdDepartureDate);
-//         row.appendChild(tdDepartureTime);
-//         row.appendChild(tdArrivalDate);
-//         row.appendChild(tdArrivalTime);
-//         row.appendChild(tdPlane);
-//         row.appendChild(tdCrewId);
-//         row.appendChild(tdCrewName);
-//
-//         tdId.innerHTML = flight['id'];
-//         tdFlightNumber.innerHTML = flight['flightNumber'];
-//         tdStartPoint.innerHTML = flight['startPoint'];
-//         tdDestinationPoint.innerHTML = flight['destinationPoint'];
-//         tdDepartureDate.innerHTML = flight['departureDate'];
-//         tdDepartureTime.innerHTML = flight['departureTime'];
-//         tdArrivalDate.innerHTML = flight['arrivalDate'];
-//         tdArrivalTime.innerHTML = flight['arrivalTime'];
-//         tdPlane.innerHTML = flight['plane'];
-//         if (flight.hasOwnProperty('crew')) {
-//             tdCrewId.innerHTML = flight['crew']['id'];
-//             tdCrewName.innerHTML = flight['crew']['name'];
-//         } else {
-//             tdCrewId.innerHTML = '0';
-//         }
-//     }
-// }
 
 function selectTableRow(row) {
     if (tmpSelectedRow != null) {
@@ -182,7 +120,7 @@ function signOut() {
         type: 'POST',
         url: 'signout',
         contentType: false,
-        success: function() {
+        success: function () {
             $(location).attr('href', 'main');
         }
     });

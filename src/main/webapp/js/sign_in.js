@@ -44,9 +44,9 @@ function buttonSubmitAction() {
 
 function onSignInAction(userRole) {
     if ('administrator' === userRole) {
-        $(location).attr('href', 'administrator');
+        $(location).prop('href', 'administrator');
     } else if ('dispatcher' === userRole) {
-        $(location).attr('href', 'dispatcher');
+        $(location).prop('href', 'dispatcher');
     } else {
         $(inputPassword).val('');
         $(inputLogin).select();

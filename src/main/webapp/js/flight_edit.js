@@ -1,53 +1,62 @@
-window.onload = function() {
+$(document).ready(function () {
     localizeFlightEdit();
-    doc.getElementById("lang").addEventListener("change", changeLocaleEventHandler);
-};
+    $('#lang').on('change', changeLocaleEventHandler);
+});
 
 function changeLocaleEventHandler() {
-    let body = "locale=" + document.getElementById("lang").value;
-    ajax("POST", "locale/change", body, changeLocale, true, "application/x-www-form-urlencoded; charset=UTF-8");
+    $.ajax({
+        type: 'POST',
+        url: 'locale/change',
+        data: 'locale=' + $('#lang').val(),
+        dataType: 'text',
+        success: changeLocale
+    });
 }
 
 function changeLocale(responseText) {
-    if ("ok" === responseText) {
+    if ('ok' === responseText) {
         localizeFlightEdit();
     }
 }
 
 function buttonSaveAction() {
-    if (!isValid()) {
+    if (!validate()) {
         return;
     }
     let flight = {
-        "id": Number(doc.getElementById("id").value),
-        "flightNumber": Number(doc.getElementById("flightNumber").value),
-        "startPoint": doc.getElementById("startPoint").value,
-        "destinationPoint": doc.getElementById("destinationPoint").value,
-        "departureDate": doc.getElementById("departureDate").value,
-        "departureTime": doc.getElementById("departureTime").value,
-        "arrivalDate": doc.getElementById("arrivalDate").value,
-        "arrivalTime": doc.getElementById("arrivalTime").value,
-        "plane": doc.getElementById("plane").value,
-        "crew": {
-            "id": Number(doc.getElementById("crewId").value)
+        'id': +$('#id').val(),
+        'flightNumber': +$('#flightNumber').val(),
+        'startPoint': $('#startPoint').val(),
+        'destinationPoint': $('#destinationPoint').val(),
+        'departureDate': $('#departureDate').val(),
+        'departureTime': $('#departureTime').val(),
+        'arrivalDate': $('#arrivalDate').val(),
+        'arrivalTime': $('#arrivalTime').val(),
+        'plane': $('#plane').val(),
+        'crew': {
+            'id': +$('#crewId').val()
         }
     };
-    let json = JSON.stringify(flight);
-    ajaxPost("../administrator/save", json, onSaveAction, true);
-}
-
-function onSaveAction(responseText) {
-    if (responseText === "ok") {
-        doc.location.href = "../administrator";
-    }
+    $.ajax({
+        type: 'POST',
+        url: '../administrator/save',
+        data: JSON.stringify(flight),
+        contentType: 'json',
+        success: function () {
+            $(location).prop('href', '../administrator');
+        }
+    });
 }
 
 function signOut() {
-    ajaxPost("../signout", null, sighOutAction, true);
-}
-
-function sighOutAction() {
-    doc.location.href = "../";
+    $.ajax({
+        type: 'POST',
+        url: '../signout',
+        contentType: false,
+        success: function () {
+            $(location).prop('href', '../main');
+        }
+    });
 }
 
 let messageFlightNumberIndex = 0;
@@ -57,67 +66,63 @@ let messageDepartureDateTimeIndex = 0;
 let messageArrivalDateTimeIndex = 0;
 let messagePlaneIndex = 0;
 
-function isValid() {
-    let valid = true;
-    let inputFlightNumber = doc.getElementById("flightNumber");
-    let inputStartPoint = doc.getElementById("startPoint");
-    let inputDestinationPoint = doc.getElementById("destinationPoint");
-    let inputDepartureDate = doc.getElementById("departureDate");
-    let inputDepartureTime = doc.getElementById("departureTime");
-    let inputArrivalDate = doc.getElementById("arrivalDate");
-    let inputArrivalTime = doc.getElementById("arrivalTime");
-    let inputPlane = doc.getElementById("plane");
+function validate() {
+    let isValid = true;
+    let $flightNumber = $('#flightNumber');
 
-    if (!inputFlightNumber.value.trim()) {
+    if ('' === $flightNumber.val().trim()) {
         messageFlightNumberIndex = 1;
-        valid = false;
-    } else {
-        if (/[0-9]/.test(inputFlightNumber.value)) {
+        isValid = false;
+    } else if (/[0-9]/.test($flightNumber.val())) {
             messageFlightNumberIndex = 0;
-        } else {
+    } else {
             messageFlightNumberIndex = 2;
-            valid = false;
-        }
+            isValid = false;
     }
-    if (!inputStartPoint.value.trim()) {
+
+    if ('' === $('#startPoint').val().trim()) {
         messageStartPointIndex = 1;
-        valid = false;
+        isValid = false;
     } else {
         messageStartPointIndex = 0;
     }
-    if (!inputDestinationPoint.value.trim()) {
+
+    if ('' === $('#destinationPoint').val().trim()) {
         messageDestinationPointIndex = 1;
-        valid = false;
+        isValid = false;
     } else {
         messageDestinationPointIndex = 0;
     }
-    if (!inputDepartureDate.value || !inputDepartureTime.value) {
+
+    if ('' === $('#departureDate').val() || '' === $('#departureTime').val()) {
         messageDepartureDateTimeIndex = 3;
-        valid = false;
+        isValid = false;
     } else {
         messageDepartureDateTimeIndex = 0;
     }
-    if (!inputArrivalDate.value || !inputArrivalTime.value) {
+
+    if ('' === $('#arrivalDate').val() || '' === $('#arrivalTime').val()) {
         messageArrivalDateTimeIndex = 3;
-        valid = false;
+        isValid = false;
     } else {
         messageArrivalDateTimeIndex = 0;
     }
-    if (!inputPlane.value) {
+
+    if ('' === $('#plane').val()) {
         messagePlaneIndex = 1;
-        valid = false;
+        isValid = false;
     } else {
         messagePlaneIndex = 0;
     }
-    setMessages();
-    return valid;
+    showErrorMessages();
+    return isValid;
 }
 
-function setMessages() {
-    doc.getElementById("messageFlightNumber").innerHTML = messages[messageFlightNumberIndex];
-    doc.getElementById("messageStartPoint").innerHTML = messages[messageStartPointIndex];
-    doc.getElementById("messageDestinationPoint").innerHTML = messages[messageDestinationPointIndex];
-    doc.getElementById("messageDepartureDateTime").innerHTML = messages[messageDepartureDateTimeIndex];
-    doc.getElementById("messageArrivalDateTime").innerHTML = messages[messageArrivalDateTimeIndex];
-    doc.getElementById("messagePlane").innerHTML = messages[messagePlaneIndex];
+function showErrorMessages() {
+    $('#messageFlightNumber').html(messages[messageFlightNumberIndex]);
+    $('#messageStartPoint').html(messages[messageStartPointIndex]);
+    $('#messageDestinationPoint').html(messages[messageDestinationPointIndex]);
+    $('#messageDepartureDateTime').html(messages[messageDepartureDateTimeIndex]);
+    $('#messageArrivalDateTime').html(messages[messageArrivalDateTimeIndex]);
+    $('#messagePlane').html(messages[messagePlaneIndex]);
 }

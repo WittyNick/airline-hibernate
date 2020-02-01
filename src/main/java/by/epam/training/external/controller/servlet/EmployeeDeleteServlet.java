@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 @WebServlet("/dispatcher/employee/delete")
 public class EmployeeDeleteServlet extends HttpServlet {
@@ -19,22 +22,15 @@ public class EmployeeDeleteServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("text/plain; charset=UTF-8");
         String jsonEmployee = readJson(req);
-        if (jsonEmployee.isEmpty()) {
-            resp.getWriter().print("fail");
-            return;
-        }
         Employee employee = gson.fromJson(jsonEmployee, Employee.class);
         dispatcherService.fireEmployee(employee.getId());
-        resp.getWriter().print("ok");
     }
 
     private String readJson(HttpServletRequest req) throws IOException {
-        BufferedReader reader = req.getReader();
-        if (reader == null) {
-            return "";
+        InputStream in = req.getInputStream();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+            return reader.readLine();
         }
-        return reader.readLine();
     }
 }

@@ -1,4 +1,3 @@
-let responseObject;
 let dict;
 let messages;
 
@@ -32,27 +31,26 @@ function localizeMain() {
 }
 
 function applyLocaleMain(response) {
-    responseObject = response; // deprecated
     dict = response;
     setLocaleSelector();
 
     $('#mainTab').html(dict['main']);
     $('#administratorTab a:first-child').html(dict['administrator']);
     $('#dispatcherTab a:first-child').html(dict['dispatcher']);
-    let spanArr = $('#sign').children();
-    $(spanArr).eq(0).html(dict['sign_in']);
-    $(spanArr).eq(1).html(dict['sign_out']);
+    let $spans = $('#sign').children();
+    $spans.eq(0).html(dict['sign_in']);
+    $spans.eq(1).html(dict['sign_out']);
     $('#content').attr('lang', dict['lang']);
-    $('tableCaption').html(dict['schedule']);
-    let headColumns = $('#hatRow').children();
-    $(headColumns).eq(0).html(dict['number']);
-    $(headColumns).eq(1).html(dict['from']);
-    $(headColumns).eq(2).html(dict['to']);
-    $(headColumns).eq(3).html(dict['departure_date']);
-    $(headColumns).eq(4).html(dict['departure_time']);
-    $(headColumns).eq(5).html(dict['arrival_date']);
-    $(headColumns).eq(6).html(dict['arrival_time']);
-    $(headColumns).eq(7).html(dict['plane']);
+    $('#tableCaption').html(dict['schedule']);
+    let $headColumns = $('#hatRow').children();
+    $headColumns.eq(0).html(dict['number']);
+    $headColumns.eq(1).html(dict['from']);
+    $headColumns.eq(2).html(dict['to']);
+    $headColumns.eq(3).html(dict['departure_date']);
+    $headColumns.eq(4).html(dict['departure_time']);
+    $headColumns.eq(5).html(dict['arrival_date']);
+    $headColumns.eq(6).html(dict['arrival_time']);
+    $headColumns.eq(7).html(dict['plane']);
 }
 
 // ---------- sign_in.jsp ----------
@@ -79,7 +77,6 @@ function localizeSignIn() {
 }
 
 function applyLocaleSignIn(response) {
-    responseObject = response; // deprecated
     dict = response;
     setLocaleSelector();
 
@@ -101,7 +98,7 @@ function applyLocaleSignIn(response) {
 
 // ---------- administrator.jsp ----------
 function localizeAdministrator() {
-    let requestArray = [
+    let words = [
         'lang',
         'main',
         'administrator',
@@ -121,37 +118,44 @@ function localizeAdministrator() {
         'flight.delete',
         'flight.confirm.delete'
     ];
-    ajaxPost('locale', JSON.stringify(requestArray), applyLocaleAdministrator, true);
+    $.ajax({
+        type: 'POST',
+        url: 'locale',
+        data: JSON.stringify(words),
+        contentType: 'json',
+        dataType: 'json',
+        success: applyLocaleAdministrator
+    });
 }
 
-function applyLocaleAdministrator(responseText) {
-    responseObject = JSON.parse(responseText);
-    dict = JSON.parse(responseText);
+function applyLocaleAdministrator(response) {
+    dict = response;
     setLocaleSelector();
 
-    doc.getElementById('mainTab').firstElementChild.innerHTML = responseObject['main'];
-    doc.getElementById('administratorTab').innerText = responseObject['administrator'];
-    doc.getElementById('sign').firstElementChild.innerText = responseObject['sign_out'];
-    doc.getElementById('content').lang = responseObject['lang'];
-    doc.getElementById('tableCaption').innerText = responseObject['flights'];
-    let headColumns = document.getElementById('hatRow').children;
-    headColumns[1].innerHTML = responseObject['number'];
-    headColumns[2].innerHTML = responseObject['from'];
-    headColumns[3].innerHTML = responseObject['to'];
-    headColumns[4].innerHTML = responseObject['departure_date'];
-    headColumns[5].innerHTML = responseObject['departure_time'];
-    headColumns[6].innerHTML = responseObject['arrival_date'];
-    headColumns[7].innerHTML = responseObject['arrival_time'];
-    headColumns[8].innerHTML = responseObject['plane'];
-    headColumns[10].innerHTML = responseObject['crew'];
-    doc.getElementById('buttonEdit').value = responseObject['flight.edit'];
-    doc.getElementById('buttonAdd').value = responseObject['flight.add'];
-    doc.getElementById('buttonDelete').value = responseObject['flight.delete'];
+    $('#mainTab').children().eq(0).html(dict['main']);
+    $('#administratorTab').html(dict['administrator']);
+    $('#sign').children().eq(0).html(dict['sign_out']);
+    $('#content').attr('lang', dict['lang']);
+    $('#tableCaption').html(dict['flights']);
+
+    let $headColumns = $('#hatRow').children();
+    $headColumns.eq(1).html(dict['number']);
+    $headColumns.eq(2).html(dict['from']);
+    $headColumns.eq(3).html(dict['to']);
+    $headColumns.eq(4).html(dict['departure_date']);
+    $headColumns.eq(5).html(dict['departure_time']);
+    $headColumns.eq(6).html(dict['arrival_date']);
+    $headColumns.eq(7).html(dict['arrival_time']);
+    $headColumns.eq(8).html(dict['plane']);
+    $headColumns.eq(10).html(dict['crew']);
+    $('#buttonEdit').val(dict['flight.edit']);
+    $('#buttonAdd').val(dict['flight.add']);
+    $('#buttonDelete').val(dict['flight.delete']);
 }
 
-// ---------- FlightEditServlet ----------
+// ---------- flight_edit.jsp ----------
 function localizeFlightEdit() {
-    let requestArray = [
+    let words = [
         'lang',
         'main',
         'administrator',
@@ -170,40 +174,47 @@ function localizeFlightEdit() {
         'message.flight.edit.illegal_value',
         'message.flight.edit.fill_date_time'
     ];
-    ajaxPost('locale', JSON.stringify(requestArray), applyFlightEdit, true);
+    $.ajax({
+        type: 'POST',
+        url: 'locale',
+        data: JSON.stringify(words),
+        contentType: 'json',
+        dataType: 'json',
+        success: applyFlightEdit
+    });
 }
 
-function applyFlightEdit(responseText) {
-    responseObject = JSON.parse(responseText);
+function applyFlightEdit(response) {
+    dict = response;
     setLocaleSelector();
 
-    doc.getElementById('mainTab').firstElementChild.innerHTML = responseObject['main'];
-    doc.getElementById('administratorTab').innerText = responseObject['administrator'];
-    doc.getElementById('sign').firstElementChild.innerText = responseObject['sign_out'];
-    doc.getElementById('content').lang = responseObject['lang'];
-    doc.getElementById('labelFlightNumber').innerText = responseObject['flight.edit.number'];
-    doc.getElementById('labelStartPoint').innerText = responseObject['flight.edit.from'];
-    doc.getElementById('labelDestinationPoint').innerText = responseObject['flight.edit.to'];
-    doc.getElementById('labelDepartureDate').innerText = responseObject['flight.edit.departure_date'];
-    doc.getElementById('labelDepartureTime').innerText = responseObject['flight.edit.departure_time'];
-    doc.getElementById('labelArrivalDate').innerText = responseObject['flight.edit.arrival_date'];
-    doc.getElementById('labelArrivalTime').innerText = responseObject['flight.edit.arrival_time'];
-    doc.getElementById('labelPlane').innerText = responseObject['flight.edit.plane'];
-    doc.getElementById('buttonSave').value = responseObject['flight.edit.save'];
-    doc.getElementById('buttonCancel').value = responseObject['flight.edit.cancel'];
+    $('#mainTab').children().first().html(dict['main']);
+    $('#administratorTab').html(dict['administrator']);
+    $('#sign').children().first().html(dict['sign_out']);
+    $('#content').attr('lang', dict['lang']);
+    $('#labelFlightNumber').html(dict['flight.edit.number']);
+    $('#labelStartPoint').html(dict['flight.edit.from']);
+    $('#labelDestinationPoint').html(dict['flight.edit.to']);
+    $('#labelDepartureDate').html(dict['flight.edit.departure_date']);
+    $('#labelDepartureTime').html(dict['flight.edit.departure_time']);
+    $('#labelArrivalDate').html(dict['flight.edit.arrival_date']);
+    $('#labelArrivalTime').html(dict['flight.edit.arrival_time']);
+    $('#labelPlane').html(dict['flight.edit.plane']);
+    $('#buttonSave').val(dict['flight.edit.save']);
+    $('#buttonCancel').val(dict['flight.edit.cancel']);
 
     messages = [
         "",
-        responseObject['message.flight.edit.fill_field'],
-        responseObject['message.flight.edit.illegal_value'],
-        responseObject['message.flight.edit.fill_date_time']
+        dict['message.flight.edit.fill_field'],
+        dict['message.flight.edit.illegal_value'],
+        dict['message.flight.edit.fill_date_time']
     ];
     showErrorMessages();
 }
 
 // ---------- dispatcher.jsp ----------
 function localizeDispatcher() {
-    let requestArray = [
+    let words = [
         'lang',
         'main',
         'dispatcher',
@@ -222,35 +233,42 @@ function localizeDispatcher() {
         'crew.delete',
         'crew.confirm.delete'
     ];
-    ajaxPost('locale', JSON.stringify(requestArray), applyLocaleDispatcher, true);
+    $.ajax({
+        type: 'POST',
+        url: 'locale',
+        data: JSON.stringify(words),
+        contentType: 'json',
+        dataType: 'json',
+        success: applyLocaleDispatcher
+    });
 }
 
-function applyLocaleDispatcher(responseText) {
-    responseObject = JSON.parse(responseText);
+function applyLocaleDispatcher(response) {
+    dict = response;
     setLocaleSelector();
 
-    doc.getElementById('mainTab').firstElementChild.innerHTML = responseObject['main'];
-    doc.getElementById('dispatcherTab').innerText = responseObject['dispatcher'];
-    doc.getElementById('sign').firstElementChild.innerText = responseObject['sign_out'];
-    doc.getElementById('content').lang = responseObject['lang'];
-    doc.getElementById('tableCaption').innerText = responseObject['crews'];
-    let headColumns = document.getElementById('hatRow').children;
-    headColumns[1].innerHTML = responseObject['number'];
-    headColumns[2].innerHTML = responseObject['from'];
-    headColumns[3].innerHTML = responseObject['to'];
-    headColumns[4].innerHTML = responseObject['departure_date'];
-    headColumns[5].innerHTML = responseObject['departure_time'];
-    headColumns[6].innerHTML = responseObject['arrival_date'];
-    headColumns[7].innerHTML = responseObject['arrival_time'];
-    headColumns[8].innerHTML = responseObject['plane'];
-    headColumns[10].innerHTML = responseObject['crew'];
-    doc.getElementById('buttonEdit').value = responseObject['crew.edit'];
-    doc.getElementById('buttonDelete').value = responseObject['crew.delete'];
+    $('#mainTab').children().first().html(dict['main']);
+    $('#dispatcherTab').html(dict['dispatcher']);
+    $('#sign').children().first().html(dict['sign_out']);
+    $('#content').attr('lang', dict['lang']);
+    $('#tableCaption').html(dict['crews']);
+    let $headColumns = $('#hatRow').children();
+    $headColumns.eq(1).html(dict['number']);
+    $headColumns.eq(2).html(dict['from']);
+    $headColumns.eq(3).html(dict['to']);
+    $headColumns.eq(4).html(dict['departure_date']);
+    $headColumns.eq(5).html(dict['departure_time']);
+    $headColumns.eq(6).html(dict['arrival_date']);
+    $headColumns.eq(7).html(dict['arrival_time']);
+    $headColumns.eq(8).html(dict['plane']);
+    $headColumns.eq(10).html(dict['crew']);
+    $('#buttonEdit').val(dict['crew.edit']);
+    $('#buttonDelete').val(dict['crew.delete']);
 }
 
-// ---------- CrewEditServlet ----------
+// ---------- crew_edit.jsp ----------
 function localizeCrewEdit() {
-    let requestArray = [
+    let words = [
         'lang',
         'main',
         'dispatcher',
@@ -280,73 +298,78 @@ function localizeCrewEdit() {
         'message.crew.edit.enter_employee_surname',
         'message.crew.edit.enter_employee_name_and_surname'
     ];
-    ajaxPost('locale', JSON.stringify(requestArray), applyCrewEdit, true);
+    $.ajax({
+        type: 'POST',
+        url: 'locale',
+        data: JSON.stringify(words),
+        contentType: 'json',
+        dataType: 'json',
+        success: applyCrewEdit
+    });
 }
 
-function applyCrewEdit(responseText) {
-    responseObject = JSON.parse(responseText);
+function applyCrewEdit(response) {
+    dict = response;
     setLocaleSelector();
 
-    doc.getElementById('mainTab').firstElementChild.innerHTML = responseObject['main'];
-    doc.getElementById('dispatcherTab').innerText = responseObject['dispatcher'];
-    doc.getElementById('sign').firstElementChild.innerText = responseObject['sign_out'];
-    doc.getElementById('content').lang = responseObject['lang'];
-    doc.getElementById('labelName').innerText = responseObject['crew.edit.crew_name'];
-    doc.getElementById('captionEmployeeList').innerText = responseObject['crew.edit.employee_list'];
-    doc.getElementById('captionEmployeeBase').innerText = responseObject['crew.edit.employee_base'];
-    let headEmployeeListColumns = doc.getElementById('hatEmployeeListRow').children;
-    headEmployeeListColumns[1].innerHTML = responseObject['name'];
-    headEmployeeListColumns[2].innerHTML = responseObject['surname'];
-    headEmployeeListColumns[4].innerHTML = responseObject['position'];
-    let headEmployeeBaseColumns = doc.getElementById('hatEmployeeBaseRow').children;
-    headEmployeeBaseColumns[1].innerHTML = responseObject['name'];
-    headEmployeeBaseColumns[2].innerHTML = responseObject['surname'];
-    headEmployeeBaseColumns[4].innerHTML = responseObject['position'];
-    doc.getElementById('labelNewEmployeeName').innerText = responseObject['crew.edit.name'];
-    doc.getElementById('labelNewEmployeeSurname').innerText = responseObject['crew.edit.surname'];
-    doc.getElementById('labelNewEmployeePosition').innerText = responseObject['crew.edit.position'];
-    doc.getElementById('buttonRemoveFromCrew').value = responseObject['crew.edit.remove_from_crew'];
-    doc.getElementById('buttonEngageEmployee').value = responseObject['crew.edit.engage_employee'];
-    doc.getElementById('buttonAddToCrew').value = responseObject['crew.edit.add_to_crew'];
-    doc.getElementById('buttonFireEmployee').value = responseObject['crew.edit.fire_employee'];
-    doc.getElementById('buttonSave').value = responseObject['crew.edit.save'];
-    doc.getElementById('buttonCancel').value = responseObject['crew.edit.cancel'];
-    let employeeListRows = doc.getElementById('employeeListBody').children;
-    for (let i = 0; i < employeeListRows.length; i++) {
-        employeeListRows[i].children[4].innerText = responseObject[employeeListRows[i].children[3].innerText.toLowerCase()];
-    }
-    let employeeBaseRows = doc.getElementById('employeeBaseBody').children;
-    for (let j = 0; j < employeeBaseRows.length; j++) {
-        employeeBaseRows[j].children[4].innerText = responseObject[employeeBaseRows[j].children[3].innerText.toLowerCase()];
-    }
-    let positionSelectOptions = doc.getElementById('newEmployeePosition').children;
-    for (let k = 0; k < positionSelectOptions.length; k++) {
-        let option = positionSelectOptions[k];
-        option.innerHTML = responseObject[positionSelectOptions[k].value.toLowerCase()];
-    }
+    $('#mainTab').children().first().html(dict['main']);
+    $('#dispatcherTab').html(dict['dispatcher']);
+    $('#sign').children().first().html(dict['sign_out']);
+    $('#content').attr('lang', dict['lang']);
+    $('#labelName').html(dict['crew.edit.crew_name']);
+    $('#captionEmployeeList').html(dict['crew.edit.employee_list']);
+    $('#captionEmployeeBase').html(dict['crew.edit.employee_base']);
+    let $headEmployeeListColumns = $('#hatEmployeeListRow').children();
+    $headEmployeeListColumns.eq(1).html(dict['name']);
+    $headEmployeeListColumns.eq(2).html(dict['surname']);
+    $headEmployeeListColumns.eq(4).html(dict['position']);
+    let $headEmployeeBaseColumns = $('#hatEmployeeBaseRow').children();
+    $headEmployeeBaseColumns.eq(1).html(dict['name']);
+    $headEmployeeBaseColumns.eq(2).html(dict['surname']);
+    $headEmployeeBaseColumns.eq(4).html(dict['position']);
+    $('#labelNewEmployeeName').html(dict['crew.edit.name']);
+    $('#labelNewEmployeeSurname').html(dict['crew.edit.surname']);
+    $('#labelNewEmployeePosition').innerText = dict['crew.edit.position'];
+    $('#buttonRemoveFromCrew').val(dict['crew.edit.remove_from_crew']);
+    $('#buttonEngageEmployee').val(dict['crew.edit.engage_employee']);
+    $('#buttonAddToCrew').val(dict['crew.edit.add_to_crew']);
+    $('#buttonFireEmployee').val(dict['crew.edit.fire_employee']);
+    $('#buttonSave').val(dict['crew.edit.save']);
+    $('#buttonCancel').val(dict['crew.edit.cancel']);
+
+    $('#employeeListBody').children().each(function (index, row) {
+        let $positions = $(row).children();
+        $positions.eq(4).html(dict[$positions.eq(3).html().toLowerCase()]);
+    });
+    $('#employeeBaseBody').children().each(function (index, row) {
+        let $positions = $(row).children();
+        $positions.eq(4).html(dict[$positions.eq(3).html().toLowerCase()]);
+    });
+    $('#newEmployeePosition').children().each(function (index, option) {
+        $(option).html(dict[$(option).val().toLowerCase()]);
+    });
 
     messages = [
         '',
-        responseObject['message.crew.edit.enter_crew_name'],
-        responseObject['message.crew.edit.enter_employee_name'],
-        responseObject['message.crew.edit.enter_employee_surname'],
-        responseObject['message.crew.edit.enter_employee_name_and_surname']
+        dict['message.crew.edit.enter_crew_name'],
+        dict['message.crew.edit.enter_employee_name'],
+        dict['message.crew.edit.enter_employee_surname'],
+        dict['message.crew.edit.enter_employee_name_and_surname']
     ];
     showErrorMessages();
 }
 
-// --------------------
-
+// ---------------------------------------------------
 function setLocaleSelector() {
-    let lang = doc.getElementById('lang');
-    if ('default' === lang.value) {
-        let langOptions = lang.children;
-        for (let i = 1; i < langOptions.length; i++) {
-            if (langOptions[i].value === responseObject['locale']) {
-                langOptions[i].selected = true;
+    let $lang = $("#lang");
+    if ("default" === $lang.val()) {
+        let $langOptions = $lang.children();
+        for (let i = 1; i < $langOptions.length; i++) {
+            let $option = $langOptions.eq(i);
+            if ($option.val() === dict["locale"]) {
+                $option.prop("selected", true);
                 return;
             }
         }
-        langOptions[0].selected = true;
     }
 }

@@ -1,28 +1,36 @@
 let tmpSelectedRow = null;
 
-window.onload = function() {
+$(document).ready(function () {
     localizeDispatcher();
-    doc.getElementById("lang").addEventListener("change", changeLocaleEventHandler);
-    ajaxPost("main", null, createTableBody, true);
-};
+    $('#lang').on('change', changeLocaleEventHandler);
+    fillTableFlights();
+});
+
+function fillTableFlights() {
+    $.ajax({
+        type: 'POST',
+        url: 'main',
+        contentType: false,
+        dataType: 'json',
+        success: createTableBody
+    });
+}
 
 function changeLocaleEventHandler() {
-    let body = "locale=" + document.getElementById("lang").value;
-    ajax("POST", "locale/change", body, changeLocale, true,"application/x-www-form-urlencoded; charset=UTF-8");
+    $.ajax({
+        type: 'POST',
+        url: 'locale/change',
+        data: 'locale=' + $('#lang').val(),
+        dataType: "text",
+        success: changeLocale
+    });
 }
 
 function changeLocale(responseText) {
-    if ("ok" === responseText) {
+    if ('ok' === responseText) {
         localizeDispatcher();
-        clearMainTable();
-        ajaxPost("main", null, createTableBody, true);
-    }
-}
-
-function clearMainTable() {
-    let tableBody = doc.getElementById("tableBody");
-    while (tableBody.hasChildNodes()) {
-        tableBody.removeChild(tableBody.lastChild);
+        $('#tableBody').empty();
+        fillTableFlights();
     }
 }
 
@@ -30,116 +38,89 @@ function buttonEditAction() {
     if (tmpSelectedRow == null) {
         return;
     }
-    let inputFlightId = doc.getElementById("flightId");
-    let inputCrewId = doc.getElementById("crewId");
-    let selectedFlightId = tmpSelectedRow.children[0].innerText; // selected flight id
-    let selectedCrewId = tmpSelectedRow.children[9].innerText; // selected crew id
-    inputFlightId.setAttribute("value", selectedFlightId);
-    inputCrewId.setAttribute("value", selectedCrewId);
-    doc.getElementById("formEdit").submit();
+    let flightId = $(tmpSelectedRow).children().eq(0).html();
+    let crewId = $(tmpSelectedRow).children().eq(9).html();
+    $('#flightId').attr('value', flightId);
+    $('#crewId').attr('value', crewId);
+    $('#formEdit').submit();
 }
 
 function buttonDeleteCrewAction() {
     if (tmpSelectedRow == null) {
         return;
     }
-    let selectedFlightArray = tmpSelectedRow.children;
-    let crewId = Number(selectedFlightArray[9].innerText);
-    if (crewId !== 0 && !confirm(responseObject["crew.confirm.delete"])) {
+    let $selectedFlightCells = $(tmpSelectedRow).children();
+    let crewId = +$selectedFlightCells.eq(9).html();
+    if (crewId !== 0 && !confirm(dict['crew.confirm.delete'])) {
         return;
     }
     let flight = {
-        "id": Number(selectedFlightArray[0].innerText),
-        "flightNumber": Number(selectedFlightArray[1].innerText),
-        "startPoint": selectedFlightArray[2].innerText,
-        "destinationPoint": selectedFlightArray[3].innerText,
-        "departureDate": selectedFlightArray[4].innerText,
-        "departureTime": selectedFlightArray[5].innerText,
-        "arrivalDate": selectedFlightArray[6].innerText,
-        "arrivalTime": selectedFlightArray[7].innerText,
-        "plane": selectedFlightArray[8].innerText,
-        "crew": {
-            "id": crewId
+        'id': +$selectedFlightCells.eq(0).html(),
+        'flightNumber': +$selectedFlightCells.eq(1).html(),
+        'startPoint': $selectedFlightCells.eq(2).html(),
+        'destinationPoint': $selectedFlightCells.eq(3).html(),
+        'departureDate': $selectedFlightCells.eq(4).html(),
+        'departureTime': $selectedFlightCells.eq(5).html(),
+        'arrivalDate': $selectedFlightCells.eq(6).html(),
+        'arrivalTime': $selectedFlightCells.eq(7).html(),
+        'plane': $selectedFlightCells.eq(8).html(),
+        'crew': {
+            'id': crewId
         }
     };
-    let body = JSON.stringify(flight);
-    ajaxPost("crew/delete", body, clearCellsAfterCrewWasDeleted, true);
-}
-
-function clearCellsAfterCrewWasDeleted(responseText) {
-    let selectedFlightArray = tmpSelectedRow.children;
-    if ("ok" === responseText) {
-        selectedFlightArray[9].innerText = "0";
-        selectedFlightArray[10].innerText = "";
-    }
-}
-
-function createTableBody(json) {
-    let flights = JSON.parse(json);
-    let tableBody = doc.getElementById("tableBody");
-
-    for (let i = 0; i < flights.length; i++) {
-        let flight = flights[i];
-
-        let row = doc.createElement("TR");
-        tableBody.appendChild(row);
-        row.addEventListener("click", function() {
-            selectTableRow(this);
-        }, false);
-
-        let tdId = doc.createElement("TD");
-        let tdFlightNumber = doc.createElement("TD");
-        let tdStartPoint = doc.createElement("TD");
-        let tdDestinationPoint = doc.createElement("TD");
-        let tdDepartureDate = doc.createElement("TD");
-        let tdDepartureTime = doc.createElement("TD");
-        let tdArrivalDate = doc.createElement("TD");
-        let tdArrivalTime = doc.createElement("TD");
-        let tdPlane = doc.createElement("TD");
-        let tdCrewId = doc.createElement("TD");
-        let tdCrewName = doc.createElement("TD");
-        row.appendChild(tdId);
-        row.appendChild(tdFlightNumber);
-        row.appendChild(tdStartPoint);
-        row.appendChild(tdDestinationPoint);
-        row.appendChild(tdDepartureDate);
-        row.appendChild(tdDepartureTime);
-        row.appendChild(tdArrivalDate);
-        row.appendChild(tdArrivalTime);
-        row.appendChild(tdPlane);
-        row.appendChild(tdCrewId);
-        row.appendChild(tdCrewName);
-
-        tdId.innerHTML = flight["id"];
-        tdFlightNumber.innerHTML = flight["flightNumber"];
-        tdStartPoint.innerHTML = flight["startPoint"];
-        tdDestinationPoint.innerHTML = flight["destinationPoint"];
-        tdDepartureDate.innerHTML = flight["departureDate"];
-        tdDepartureTime.innerHTML = flight["departureTime"];
-        tdArrivalDate.innerHTML = flight["arrivalDate"];
-        tdArrivalTime.innerHTML = flight["arrivalTime"];
-        tdPlane.innerHTML = flight["plane"];
-        if (flight.hasOwnProperty("crew")) {
-            tdCrewId.innerHTML = flight["crew"]["id"];
-            tdCrewName.innerHTML = flight["crew"]["name"];
-        } else {
-            tdCrewId.innerHTML = "0";
+    $.ajax({
+        type: 'POST',
+        url: 'crew/delete',
+        data: JSON.stringify(flight),
+        contentType: 'json',
+        success: function () {
+            let $selectedFlightCells = $(tmpSelectedRow).children();
+            $selectedFlightCells.eq(9).html('0');
+            $selectedFlightCells.eq(10).html('');
         }
-    }
+    });
+}
+
+function createTableBody(flights) {
+    flights.forEach(function (flight) {
+        let $row = $('<tr>').on('click', function () {
+            selectTableRow(this);
+        });
+        let cells = '<td>' + flight.id +
+            '</td><td>' + flight.flightNumber +
+            '</td><td>' + flight.startPoint +
+            '</td><td>' + flight.destinationPoint +
+            '</td><td>' + flight.departureDate +
+            '</td><td>' + flight.departureTime +
+            '</td><td>' + flight.arrivalDate +
+            '</td><td>' + flight.arrivalTime +
+            '</td><td>' + flight.plane;
+        if ('crew' in flight) {
+            cells += '</td><td>' + flight.crew.id +
+                '</td><td>' + flight.crew.name + '</td>';
+        } else {
+            cells += '</td><td>0</td><td></td>';
+        }
+        $row.html(cells);
+        $('#tableBody').append($row);
+    });
 }
 
 function selectTableRow(row) {
     if (tmpSelectedRow != null) {
-        tmpSelectedRow.classList.remove("selected");
+        $(tmpSelectedRow).removeClass('selected');
     }
-    row.classList.add("selected");
+    $(row).addClass('selected');
     tmpSelectedRow = row;
 }
 
 function signOut() {
-    ajaxPost("signout", null, signOutAction, true);
-}
-
-function signOutAction() {
-    doc.location.href = "./";
+    $.ajax({
+        type: 'POST',
+        url: 'signout',
+        contentType: false,
+        success: function () {
+            $(location).prop('href', 'main');
+        }
+    });
 }

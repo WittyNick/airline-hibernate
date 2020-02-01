@@ -1,51 +1,54 @@
 let tmpSelectedCrewRow = null;
 let tmpSelectedBaseRow = null;
 
-window.onload = function() {
+$(document).ready(function () {
     localizeCrewEdit();
-    doc.getElementById("lang").addEventListener("change", changeLocaleEventHandler);
+    $('#lang').on('change', changeLocaleEventHandler);
     addEmployeeListSelect();
     addEmployeeBaseSelect();
-};
+});
 
 function changeLocaleEventHandler() {
-    let body = "locale=" + document.getElementById("lang").value;
-    ajax("POST", "locale/change", body, changeLocale, true, "application/x-www-form-urlencoded; charset=UTF-8");
+    $.ajax({
+        type: 'POST',
+        url: 'locale/change',
+        data: 'locale=' + $('#lang').val(),
+        dataType: "text",
+        success: changeLocale
+    });
 }
 
 function changeLocale(responseText) {
-    if ("ok" === responseText) {
+    if ('ok' === responseText) {
         localizeCrewEdit();
     }
 }
 
 function addEmployeeListSelect() {
-    let employeeListRows = doc.getElementById("employeeListBody").children;
-    for (let i = 0; i < employeeListRows.length; i++) {
-        employeeListRows[i].addEventListener("click", onEmployeeListRowClick);
-    }
+    $('#employeeListBody').children().each(function (index, row) {
+        $(row).on('click', onEmployeeListRowClick);
+    });
 }
 
 function onEmployeeListRowClick() {
     if (tmpSelectedCrewRow != null) {
-        tmpSelectedCrewRow.classList.remove("selected");
+        $(tmpSelectedCrewRow).removeClass('selected');
     }
-    this.classList.add("selected");
+    $(this).addClass('selected');
     tmpSelectedCrewRow = this;
 }
 
 function addEmployeeBaseSelect() {
-    let employeeBaseRows = doc.getElementById("employeeBaseBody").children;
-    for (let j = 0; j < employeeBaseRows.length; j++) {
-        employeeBaseRows[j].addEventListener("click", onEmployeeBaseRowClick);
-    }
+    $('#employeeBaseBody').children().each(function (index, row) {
+        $(row).on('click', onEmployeeBaseRowClick);
+    });
 }
 
 function onEmployeeBaseRowClick() {
     if (tmpSelectedBaseRow != null) {
-        tmpSelectedBaseRow.classList.remove("selected");
+        $(tmpSelectedBaseRow).removeClass('selected');
     }
-    this.classList.add("selected");
+    $(this).addClass('selected');
     tmpSelectedBaseRow = this;
 }
 
@@ -54,14 +57,12 @@ function removeFromCrewAction() {
         return;
     }
     if (tmpSelectedBaseRow != null) {
-        tmpSelectedBaseRow.classList.remove("selected");
+        $(tmpSelectedBaseRow).removeClass('selected');
     }
-    let tableEmployeeBaseBody = doc.getElementById("employeeBaseBody");
-    let tableEmployeeListBody = doc.getElementById("employeeListBody");
-    tmpSelectedCrewRow.removeEventListener("click", onEmployeeListRowClick);
-    tableEmployeeListBody.removeChild(tmpSelectedCrewRow);
-    tableEmployeeBaseBody.appendChild(tmpSelectedCrewRow);
-    tmpSelectedCrewRow.addEventListener("click", onEmployeeBaseRowClick);
+    $(tmpSelectedCrewRow).off('click');
+    $(tmpSelectedCrewRow).detach();
+    $('#employeeBaseBody').append(tmpSelectedCrewRow);
+    $(tmpSelectedCrewRow).on('click', onEmployeeBaseRowClick);
     tmpSelectedBaseRow = tmpSelectedCrewRow;
     tmpSelectedCrewRow = null;
 }
@@ -70,173 +71,163 @@ function addToCrewAction() {
     if (tmpSelectedBaseRow == null) {
         return;
     }
-
     if (tmpSelectedCrewRow != null) {
-        tmpSelectedCrewRow.classList.remove("selected");
+        $(tmpSelectedCrewRow).removeClass('selected');
     }
-    let tableEmployeeBaseBody = doc.getElementById("employeeBaseBody");
-    let tableEmployeeListBody = doc.getElementById("employeeListBody");
-    tmpSelectedBaseRow.removeEventListener("click", onEmployeeBaseRowClick);
-    tableEmployeeBaseBody.removeChild(tmpSelectedBaseRow);
-    tableEmployeeListBody.appendChild(tmpSelectedBaseRow);
-    tmpSelectedBaseRow.addEventListener("click", onEmployeeListRowClick);
+    $(tmpSelectedBaseRow).off('click');
+    $(tmpSelectedBaseRow).detach();
+    $('#employeeListBody').append(tmpSelectedBaseRow);
+    $(tmpSelectedBaseRow).on('click', onEmployeeListRowClick);
     tmpSelectedCrewRow = tmpSelectedBaseRow;
     tmpSelectedBaseRow = null;
 }
 
 function engageEmployeeAction() {
-    if (!isValidAddEmployee()) {
+    if (!validateNewEmployee()) {
         return;
     }
-    let inputNewEmployeeName = doc.getElementById("newEmployeeName");
-    let inputNewEmployeeSurname = doc.getElementById("newEmployeeSurname");
-    let employeeSend = {
-        "id": 0,
-        "name": inputNewEmployeeName.value,
-        "surname": inputNewEmployeeSurname.value,
-        "position": doc.getElementById("newEmployeePosition").value
+    let employee = {
+        'id': 0,
+        'name': $('#newEmployeeName').val(),
+        'surname': $('#newEmployeeSurname').val(),
+        'position': $('#newEmployeePosition').val()
     };
-    let json = JSON.stringify(employeeSend);
-    ajaxPost("employee/add", json, onEngageEmployeeCallback, true);
+    $.ajax({
+        type: 'POST',
+        url: 'employee/add',
+        data: JSON.stringify(employee),
+        contentType: 'json',
+        dataType: 'json',
+        success: onEngageEmployeeCallback
+    });
 }
 
-function onEngageEmployeeCallback(responseText) {
-    let inputNewEmployeeName = doc.getElementById("newEmployeeName");
-    let inputNewEmployeeSurname = doc.getElementById("newEmployeeSurname");
+function onEngageEmployeeCallback(employee) {
+    let $row = $('<tr>').on('click', onEmployeeListRowClick);
+    let cells = '<td>' + employee.id +
+        '</td><td>' + employee.name +
+        '</td><td>' + employee.surname +
+        '</td><td>' + employee.position +
+        '</td><td>' + dict[employee.position.toLowerCase()] + '</td>';
 
-    let employeeResponse = JSON.parse(responseText);
-    let row = doc.createElement("TR");
-    let tdId = doc.createElement("TD");
-    let tdName = doc.createElement("TD");
-    let tdSurname = doc.createElement("TD");
-    let tdPositionEnum = doc.createElement("TD");
-    let tdPosition = doc.createElement("TD");
-    row.appendChild(tdId);
-    row.appendChild(tdName);
-    row.appendChild(tdSurname);
-    row.appendChild(tdPositionEnum);
-    row.appendChild(tdPosition);
-    tdId.innerText = employeeResponse["id"];
-    tdName.innerText = employeeResponse["name"];
-    tdSurname.innerText = employeeResponse["surname"];
-    tdPositionEnum.innerText = employeeResponse["position"];
-    tdPosition.innerText = responseObject[employeeResponse["position"].toLowerCase()]; // localization
-    row.addEventListener("click", onEmployeeListRowClick);
-    doc.getElementById("employeeListBody").appendChild(row);
-    row.click();
-    inputNewEmployeeName.value = "";
-    inputNewEmployeeSurname.value = "";
+    $row.html(cells);
+    $('#employeeListBody').append($row);
+    $row.click();
+
+    $('#newEmployeeName').val('');
+    $('#newEmployeeSurname').val('');
 }
 
 function fireEmployeeAction() {
     if (tmpSelectedBaseRow == null) {
         return;
     }
-    if (!confirm(responseObject["crew.edit.confirm.fire_employee"])) {
+    if (!confirm(dict['crew.edit.confirm.fire_employee'])) {
         return;
     }
-    let employeeChildren = tmpSelectedBaseRow.children;
+    let $cells = $(tmpSelectedBaseRow).children();
     let employee = {
-        "id": employeeChildren[0].innerText,
-        "name": employeeChildren[1].innerText,
-        "surname": employeeChildren[2].innerText,
-        "position": employeeChildren[3].innerText
+        'id': $cells.eq(0).html(),
+        'name': $cells.eq(1).html(),
+        'surname': $cells.eq(2).html(),
+        'position': $cells.eq(3).html()
     };
-    let json = JSON.stringify(employee);
-    ajaxPost("employee/delete", json, onFireEmployeeAction, true);
-}
-
-function onFireEmployeeAction(responseText) {
-    if ("ok" === responseText) {
-        let employeeBaseBody = doc.getElementById("employeeBaseBody");
-        employeeBaseBody.removeChild(tmpSelectedBaseRow);
-        tmpSelectedBaseRow = null;
-    }
+    $.ajax({
+        type: 'POST',
+        url: 'employee/delete',
+        data: JSON.stringify(employee),
+        contentType: 'json',
+        success: function () {
+            $(tmpSelectedBaseRow).remove();
+            tmpSelectedBaseRow = null;
+        }
+    });
 }
 
 function saveAction() {
-    if (!isValidSave()) {
+    if (!validateCrew()) {
         return;
     }
     let bobtailFlight = {
-        "id": doc.getElementById("flightId").value,
-        "crew": {
-            "id": doc.getElementById("crewId").value,
-            "name": doc.getElementById("name").value,
-            "employees": []
+        'id': $('#flightId').val(),
+        'crew': {
+            'id': $('#crewId').val(),
+            'name': $('#name').val(),
+            'employees': []
         }
     };
-    let employeeListBodyRows = doc.getElementById("employeeListBody").children;
-    for (let i = 0; i < employeeListBodyRows.length; i++) {
-        let employeeFields = employeeListBodyRows[i].children;
+    $('#employeeListBody').children().each(function (index, row) {
+        let $cells = $(row).children();
         let employee = {
-            "id": employeeFields[0].innerText,
-            "name": employeeFields[1].innerText,
-            "surname": employeeFields[2].innerText,
-            "position": employeeFields[3].innerText
+            'id': $cells.eq(0).html(),
+            'name': $cells.eq(1).html(),
+            'surname': $cells.eq(2).html(),
+            'position': $cells.eq(3).html()
         };
-        bobtailFlight["crew"]["employees"].push(employee);
-    }
-    let json = JSON.stringify(bobtailFlight);
-    ajaxPost("save", json, onSaveAction, true);
-}
-
-function onSaveAction(responseText) {
-    if ("ok" === responseText) {
-        doc.location.href = "../dispatcher";
-    }
+        bobtailFlight.crew.employees.push(employee);
+    });
+    $.ajax({
+        type: 'POST',
+        url: 'save',
+        data: JSON.stringify(bobtailFlight),
+        contentType: 'json',
+        success: function () {
+            $(location).prop('href', '../dispatcher');
+        }
+    });
 }
 
 function signOut() {
-    ajaxPost("../signout", null, onSignOutAction, true);
-}
-
-function onSignOutAction() {
-    doc.location.href = "../";
+    $.ajax({
+        type: 'POST',
+        url: '../signout',
+        contentType: false,
+        success: function () {
+            $(location).prop('href', '../main');
+        }
+    });
 }
 
 let messageCrewNameIndex = 0;
 let messageNewEmployeeIndex = 0;
 
-function isValidSave() {
-    let valid = true;
-    let inputName = doc.getElementById("name");
-    if (!inputName.value.trim()) {
+function validateCrew() {
+    let isValid = true;
+    if ('' === $('#name').val().trim()) {
         messageCrewNameIndex = 1;
-        valid = false;
+        isValid = false;
     } else {
         messageCrewNameIndex = 0;
     }
-    setMessages();
-    return valid;
+    showErrorMessages();
+    return isValid;
 }
 
-function isValidAddEmployee() {
-    let valid = true;
-    let inputNewEmployeeName = doc.getElementById("newEmployeeName");
-    let inputNewEmployeeSurname = doc.getElementById("newEmployeeSurname");
-    if (!inputNewEmployeeName.value.trim() && !inputNewEmployeeSurname.value.trim()) {
+function validateNewEmployee() {
+    let isValid = true;
+    let $newEmployeeName = $('#newEmployeeName');
+    let $newEmployeeSurname = $('#newEmployeeSurname');
+    if ('' === $newEmployeeName.val().trim() && '' === $newEmployeeSurname.val().trim()) {
         messageNewEmployeeIndex = 4;
-        valid = false;
+        isValid = false;
+    } else if ('' === $newEmployeeName.val().trim()) {
+        messageNewEmployeeIndex = 2;
+        isValid = false;
+    } else if ('' === $newEmployeeSurname.val().trim()) {
+        messageNewEmployeeIndex = 3;
+        isValid = false;
     } else {
-        if (!inputNewEmployeeName.value.trim()) {
-            messageNewEmployeeIndex = 2;
-            valid = false;
-        } else if (!inputNewEmployeeSurname.value.trim()) {
-            messageNewEmployeeIndex = 3;
-            valid = false;
-        } else {
-            messageNewEmployeeIndex = 0;
-        }
-    }
-    doc.getElementById("messageNewEmployee").innerText = messages[messageNewEmployeeIndex];
-    setTimeout(function() {
         messageNewEmployeeIndex = 0;
-        doc.getElementById("messageNewEmployee").innerText = messages[messageNewEmployeeIndex];
+    }
+    $('#messageNewEmployee').html(messages[messageNewEmployeeIndex]);
+
+    setTimeout(function () {
+        messageNewEmployeeIndex = 0;
+        $('#messageNewEmployee').html(messages[messageNewEmployeeIndex]);
     }, 2000);
-    return valid;
+    return isValid;
 }
 
-function setMessages() {
-    doc.getElementById("messageName").innerText = messages[messageCrewNameIndex];
+function showErrorMessages() {
+    $('#messageName').html(messages[messageCrewNameIndex]);
 }

@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 @WebServlet("/dispatcher/save")
 public class CrewSaveServlet extends HttpServlet {
@@ -19,23 +22,17 @@ public class CrewSaveServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("text/plain; charset=UTF-8");
         String jsonFlight = readJson(req);
-        if (jsonFlight.isEmpty()) {
-            resp.getWriter().print("fail");
-            return;
-        }
+
         // flight: only id and crew: full data (with employees)
         Flight bobtailFlight = gson.fromJson(jsonFlight, Flight.class);
         dispatcherService.editCrew(bobtailFlight);
-        resp.getWriter().print("ok");
     }
 
     private String readJson(HttpServletRequest req) throws IOException {
-        BufferedReader reader = req.getReader();
-        if (reader == null) {
-            return "";
+        InputStream in = req.getInputStream();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+            return reader.readLine();
         }
-        return reader.readLine();
     }
 }
