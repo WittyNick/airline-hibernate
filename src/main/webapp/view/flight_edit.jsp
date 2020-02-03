@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="${ctx}/css/common.css">
     <link rel="stylesheet" href="${ctx}/css/flight_edit.css">
 
-    <script defer src="${ctx}/js/lib/jquery-3.4.1.js"></script>
+    <script defer src="${ctx}/js/lib/jquery-3.4.1.min.js"></script>
     <script defer src="${ctx}/js/locale.js"></script>
     <script defer src="${ctx}/js/flight_edit.js"></script>
 </head>
