@@ -1,4 +1,4 @@
-package by.epam.training.external.entity.dto;
+package by.epam.training.external.dto;
 
 import by.epam.training.external.entity.Crew;
 import com.google.gson.annotations.Expose;

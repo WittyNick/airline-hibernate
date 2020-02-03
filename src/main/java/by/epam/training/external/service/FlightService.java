@@ -1,11 +1,11 @@
 package by.epam.training.external.service;
 
-import by.epam.training.external.config.ConfigurationManager;
 import by.epam.training.external.dao.DaoFactory;
 import by.epam.training.external.dao.FlightDao;
+import by.epam.training.external.dto.FlightDto;
 import by.epam.training.external.entity.Crew;
 import by.epam.training.external.entity.Flight;
-import by.epam.training.external.entity.dto.FlightDto;
+import by.epam.training.external.locale.LocaleManager;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class FlightService {
-    ConfigurationManager manager = ConfigurationManager.INSTANCE;
+    LocaleManager manager = LocaleManager.INSTANCE;
 
-    private FlightDao flightDao = DaoFactory.getDaoFactory().getFlightDao();
+    private FlightDao flightDao = DaoFactory.getInstance().getFlightDao();
 
     public void saveFlight(Flight flight) {
         flightDao.save(flight);
@@ -75,11 +75,11 @@ public class FlightService {
     }
 
     private String getLocaleDatePattern(Locale locale) {
-        return manager.getText(locale, "date.format");
+        return manager.getString(locale, "date.format");
     }
 
     private String getLocaleTimePattern(Locale locale) {
-        return manager.getText(locale, "time.format");
+        return manager.getString(locale, "time.format");
     }
 
     public Flight convertToFlight(FlightDto flightDto, Locale locale) {

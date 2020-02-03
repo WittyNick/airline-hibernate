@@ -20,11 +20,11 @@ public class Flight {
 
     @Column(name = "start_point")
     @Expose
-    private String startPoint;
+    private String startPoint = "";
 
     @Column(name = "destination_point")
     @Expose
-    private String destinationPoint;
+    private String destinationPoint = "";
 
     @Column(name = "departure_date_time")
     @Expose
@@ -36,7 +36,7 @@ public class Flight {
 
     @Column
     @Expose
-    private String plane;
+    private String plane = "";
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "crew_id")

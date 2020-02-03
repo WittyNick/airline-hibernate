@@ -1,13 +1,24 @@
 package by.epam.training.external.dao;
 
-import by.epam.training.external.dao.hibernate.DaoFactoryHibernate;
+public class DaoFactory {
+    private static final DaoFactory instance = new DaoFactory();
 
-public abstract class DaoFactory {
-    public abstract CrewDao getCrewDao();
-    public abstract FlightDao getFlightDao();
-    public abstract EmployeeDao getEmployeeDao();
+    private DaoFactory() {
+    }
 
-    public static DaoFactory getDaoFactory() {
-        return DaoFactoryHibernate.getDaoFactory();
+    public static DaoFactory getInstance() {
+        return instance;
+    }
+
+    public CrewDao getCrewDao() {
+        return new CrewDao();
+    }
+
+    public FlightDao getFlightDao() {
+        return new FlightDao();
+    }
+
+    public EmployeeDao getEmployeeDao() {
+        return new EmployeeDao();
     }
 }

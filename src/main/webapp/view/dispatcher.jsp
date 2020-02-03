@@ -1,23 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>ADMINISTRATOR</title>
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/administrator.css">
-    <script src="js/locale.js"></script>
-    <script src="js/administrator.js"></script>
-</head>
+    <title>DISPATCHER</title>
 
+    <link rel="shortcut icon" href="${ctx}/img/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="${ctx}/css/common.css">
+    <link rel="stylesheet" href="${ctx}/css/dispatcher.css">
+
+    <script defer src="${ctx}/js/lib/jquery-3.4.1.min.js"></script>
+    <script defer src="${ctx}/js/locale.js"></script>
+    <script defer src="${ctx}/js/dispatcher.js"></script>
+</head>
 <body>
 <div id="content">
     <div id="empty"></div>
     <table id="header">
         <tr>
             <td id="space"></td>
-            <td id="mainTab" class="tab"><a href="">main</a></td>
-            <td id="administratorTab" class="picketTab">administrator</td>
+            <td id="mainTab" class="tab"><a href="${ctx}">main</a></td>
+            <td id="dispatcherTab" class="picketTab">dispatcher</td>
             <td id="locale">
                 <select id="lang">
                     <option value="default">default</option>
@@ -52,11 +57,11 @@
         </tbody>
     </table>
     <div id="buttons">
-        <form id="formEdit" method="POST" action="administrator/edit">
+        <form id="formEdit" method="POST" action="${ctx}/dispatcher/edit">
             <input id="flightId" type="hidden" name="flightId">
-            <input id="buttonEdit" type="button" value="Edit" onclick="buttonEditAction()">
-            <input id="buttonAdd" type="button" value="Add" onclick="buttonAddAction()">
-            <input id="buttonDelete" type="button" value="Delete" onclick="buttonDeleteAction()">
+            <input id="crewId" type="hidden" name="crewId">
+            <input id="buttonEdit" type="button" value="Edit Crew" onclick="buttonEditAction()">
+            <input id="buttonDelete" type="button" value="Delete Crew" onclick="buttonDeleteCrewAction()">
         </form>
     </div>
 </div>

@@ -17,7 +17,7 @@ public class SignInServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("html/signIn.html").forward(req, resp);
+        req.getRequestDispatcher("view/sign_in.jsp").forward(req, resp);
     }
 
     /**
@@ -30,6 +30,7 @@ public class SignInServlet extends HttpServlet {
         HttpSession session = req.getSession();
         resp.setContentType("text/plain; charset=UTF-8");
         PrintWriter printWriter = resp.getWriter();
+
         String login = req.getParameter("login");
         String password = req.getParameter("password");
         if ("admin".equals(login) && "admin".equals(password)) {

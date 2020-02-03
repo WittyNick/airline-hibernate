@@ -1,11 +1,12 @@
 package by.epam.training.external.service;
 
+import by.epam.training.external.dto.FlightDto;
 import by.epam.training.external.entity.Crew;
 import by.epam.training.external.entity.Employee;
 import by.epam.training.external.entity.Flight;
-import by.epam.training.external.entity.dto.FlightDto;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
 
 public class DispatcherService {
     private CrewService crewService = new CrewService();
@@ -20,48 +21,19 @@ public class DispatcherService {
         crewService.deleteCrew(crew);
     }
 
-    public Map<String, String> getParameterMap(int flightId, int crewId) {
-        Map<String, String> map = new HashMap<>();
-        map.put("#flight.id", "" + flightId);
-        map.put("#crew.id", "" + crewId);
-        List<Employee> employeeBase = employeeService.findAllEmployees();
-        if (crewId > 0) {
-            Crew crew = crewService.findCrew(crewId);
-            Set<Employee> crewEmployees = crew.getEmployees();
-            map.put("#crew.name", crew.getName());
-            map.put("#employee.list.body", createTbodyEmployee(crewEmployees));
-            employeeBase.removeAll(crewEmployees);
-        } else {
-            map.put("#crew.name", "");
-            map.put("#employee.list.body", "");
+    public Crew getCrew(int crewId) {
+        if (crewId == 0) {
+            return new Crew();
         }
-        map.put("#employee.base.body", createTbodyEmployee(employeeBase));
-        return map;
+        return crewService.findCrew(crewId);
     }
 
-    private String createTbodyEmployee(List<Employee> employees) {
-        if (employees == null || employees.isEmpty()) {
-            return "";
+    public List<Employee> loadAllUnusedEmployees(Crew crew) {
+        List<Employee> employees = employeeService.findAllEmployees();
+        if (crew != null) {
+            employees.removeAll(crew.getEmployees());
         }
-        StringBuilder result = new StringBuilder();
-        for (Employee employee : employees) {
-            result.append(createTrEmployee(employee));
-        }
-        return result.toString();
-    }
-
-    private String createTbodyEmployee(Set<Employee> employees) {
-        return createTbodyEmployee(new ArrayList<>(employees));
-    }
-
-    private String createTrEmployee(Employee employee) {
-        return "<tr>" +
-                "<td>" + employee.getId() + "</td>" +
-                "<td>" + employee.getName() + "</td>" +
-                "<td>" + employee.getSurname() + "</td>" +
-                "<td>" + employee.getPosition().name() + "</td>" +
-                "<td></td>" +
-                "</tr>";
+        return employees;
     }
 
     public void fireEmployee(int employeeId) {
