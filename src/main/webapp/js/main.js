@@ -31,16 +31,12 @@ function changeLocaleEventHandler() {
         url: 'locale/change',
         data: 'locale=' + $('#lang').val(),
         dataType: 'text',
-        success: changeLocale
+        success: function () {
+            localizeMain();
+            $('#tableBody').empty();
+            fillTableFlights();
+        }
     });
-}
-
-function changeLocale(responseText) {
-    if ('ok' === responseText) {
-        localizeMain();
-        $('#tableBody').empty();
-        fillTableFlights();
-    }
 }
 
 function addTableFlightsContent(flights) {

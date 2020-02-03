@@ -22,16 +22,12 @@ function changeLocaleEventHandler() {
         url: 'locale/change',
         data: 'locale=' + $('#lang').val(),
         dataType: "text",
-        success: changeLocale
+        success: function () {
+            localizeDispatcher();
+            $('#tableBody').empty();
+            fillTableFlights();
+        }
     });
-}
-
-function changeLocale(responseText) {
-    if ('ok' === responseText) {
-        localizeDispatcher();
-        $('#tableBody').empty();
-        fillTableFlights();
-    }
 }
 
 function buttonEditAction() {

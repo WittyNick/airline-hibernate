@@ -17,12 +17,7 @@ public class LocaleChangeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("text/plain; charset=UTF-8");
         String localeName = req.getParameter("locale");
-        if (localeName == null) {
-            resp.getWriter().print("fail");
-            return;
-        }
         Locale locale;
         if("default".equals(localeName)) {
             locale = req.getLocale();
@@ -31,7 +26,6 @@ public class LocaleChangeServlet extends HttpServlet {
         }
         saveToSession(req, locale);
         saveToCookie(resp, locale.toString());
-        resp.getWriter().print("ok");
     }
 
     private void saveToSession(HttpServletRequest req, Locale locale) {

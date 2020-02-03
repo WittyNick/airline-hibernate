@@ -9,14 +9,8 @@ function changeLocaleEventHandler() {
         url: 'locale/change',
         data: 'locale=' + $('#lang').val(),
         dataType: 'text',
-        success: changeLocale
+        success: localizeFlightEdit
     });
-}
-
-function changeLocale(responseText) {
-    if ('ok' === responseText) {
-        localizeFlightEdit();
-    }
 }
 
 function buttonSaveAction() {

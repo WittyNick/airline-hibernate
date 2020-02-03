@@ -19,14 +19,8 @@ function changeLocaleEventHandler() {
         url: 'locale/change',
         data: 'locale=' + $("#lang").val(),
         dataType: "text",
-        success: changeLocale
+        success: localizeSignIn
     });
-}
-
-function changeLocale(responseText) {
-    if ('ok' === responseText) {
-        localizeSignIn();
-    }
 }
 
 function buttonSubmitAction() {

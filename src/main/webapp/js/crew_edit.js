@@ -14,14 +14,8 @@ function changeLocaleEventHandler() {
         url: 'locale/change',
         data: 'locale=' + $('#lang').val(),
         dataType: "text",
-        success: changeLocale
+        success: localizeCrewEdit
     });
-}
-
-function changeLocale(responseText) {
-    if ('ok' === responseText) {
-        localizeCrewEdit();
-    }
 }
 
 function addEmployeeListSelect() {

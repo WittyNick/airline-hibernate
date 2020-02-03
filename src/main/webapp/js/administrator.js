@@ -16,21 +16,17 @@ function fillTableFlights() {
     });
 }
 
-function changeLocale(responseText) {
-    if ('ok' === responseText) {
-        localizeAdministrator();
-        $('#tableBody').empty();
-        fillTableFlights();
-    }
-}
-
 function changeLocaleEventHandler() {
     $.ajax({
         type: 'POST',
         url: 'locale/change',
         data: 'locale=' + $('#lang').val(),
         dataType: "text",
-        success: changeLocale
+        success: function () {
+            localizeAdministrator();
+            $('#tableBody').empty();
+            fillTableFlights();
+        }
     });
 }
 
