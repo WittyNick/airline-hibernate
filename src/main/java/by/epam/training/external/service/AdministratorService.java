@@ -3,8 +3,13 @@ package by.epam.training.external.service;
 import by.epam.training.external.dto.FlightDto;
 import by.epam.training.external.entity.Crew;
 import by.epam.training.external.entity.Flight;
+import by.epam.training.external.service.util.HibernateSessionFactoryUtil;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 public class AdministratorService {
+    private SessionFactory sessionFactory = HibernateSessionFactoryUtil.getSessionFactory();
     private FlightService flightService = new FlightService();
     private final String dateHtmlInputPattern = "yyyy-MM-dd";
     private final String htmlHtmlInputPattern = "HH:mm";
@@ -20,7 +25,10 @@ public class AdministratorService {
             flightDto.setCrew(new Crew());
             return flightDto; // flightId = 0, crewId = 0;
         }
+        Session session = sessionFactory.getCurrentSession();
+        Transaction tx = session.beginTransaction();
         Flight flight = flightService.findFlight(flightId);
+        tx.commit();
         return flightService.convertToDto(flight, dateHtmlInputPattern, htmlHtmlInputPattern);
     }
 
@@ -31,10 +39,17 @@ public class AdministratorService {
         if (crew != null && crew.getId() == 0) {
             bobtailFlight.setCrew(null);
         }
-        if (flightDto.getId() > 0) {
-            flightService.updateFlight(bobtailFlight);
-        } else {
-            flightService.saveFlight(bobtailFlight);
+        Session session = sessionFactory.getCurrentSession();
+        Transaction tx = session.beginTransaction();
+        try {
+            if (flightDto.getId() > 0) {
+                flightService.updateFlight(bobtailFlight);
+            } else {
+                flightService.saveFlight(bobtailFlight);
+            }
+            tx.commit();
+        } catch (RuntimeException e) {
+            tx.rollback();
         }
     }
 }

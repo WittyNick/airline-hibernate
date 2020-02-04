@@ -1,60 +1,45 @@
 package by.epam.training.external.dao;
 
-import by.epam.training.external.dao.util.HibernateSessionFactoryUtil;
 import by.epam.training.external.entity.Employee;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.util.List;
 
-public class EmployeeDao implements GenericDao<Employee> {
-    private SessionFactory sessionFactory = HibernateSessionFactoryUtil.getSessionFactory();
+public class EmployeeDao extends GenericDao<Employee> {
 
     EmployeeDao() {
     }
 
     @Override
     public void save(Employee employee) {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction tx = session.beginTransaction();
-            session.save(employee);
-            tx.commit();
-        }
+        Session session = sessionFactory.getCurrentSession();
+        session.save(employee);
     }
 
     @Override
     public Employee findById(int id) {
-        try (Session session = sessionFactory.openSession()) {
-            return session.get(Employee.class, id);
-        }
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(Employee.class, id);
     }
 
     @Override
     @SuppressWarnings(value = "unchecked")
     public List<Employee> findAll() {
-        try (Session session = sessionFactory.openSession()) {
-            Query<Employee> query = session.createQuery("FROM Employee");
-            return query.list();
-        }
+        Session session = sessionFactory.getCurrentSession();
+        Query<Employee> query = session.createQuery("FROM Employee");
+        return query.list();
     }
 
     @Override
     public void update(Employee employee) {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction tx = session.beginTransaction();
-            session.update(employee);
-            tx.commit();
-        }
+        Session session = sessionFactory.getCurrentSession();
+        session.update(employee);
     }
 
     @Override
     public void delete(Employee employee) {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction tx = session.beginTransaction();
-            session.delete(employee);
-            tx.commit();
-        }
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(employee);
     }
 }

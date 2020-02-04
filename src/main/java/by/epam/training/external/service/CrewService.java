@@ -4,8 +4,6 @@ import by.epam.training.external.dao.CrewDao;
 import by.epam.training.external.dao.DaoFactory;
 import by.epam.training.external.entity.Crew;
 
-import java.util.List;
-
 public class CrewService {
     private CrewDao crewDao = DaoFactory.getInstance().getCrewDao();
 
@@ -15,10 +13,6 @@ public class CrewService {
 
     public Crew findCrew(int id) {
         return crewDao.findById(id);
-    }
-
-    public List<Crew> findAllCrews() {
-        return crewDao.findAll();
     }
 
     public void updateCrew(Crew crew) {

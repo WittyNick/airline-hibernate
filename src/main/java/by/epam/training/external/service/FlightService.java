@@ -6,6 +6,12 @@ import by.epam.training.external.dto.FlightDto;
 import by.epam.training.external.entity.Crew;
 import by.epam.training.external.entity.Flight;
 import by.epam.training.external.locale.LocaleManager;
+import by.epam.training.external.service.util.HibernateSessionFactoryUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +20,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class FlightService {
-    LocaleManager manager = LocaleManager.INSTANCE;
+    private static final Logger log = LogManager.getLogger(FlightService.class);
+    private LocaleManager manager = LocaleManager.INSTANCE;
+    private SessionFactory sessionFactory = HibernateSessionFactoryUtil.getSessionFactory();
 
     private FlightDao flightDao = DaoFactory.getInstance().getFlightDao();
 
@@ -27,7 +35,12 @@ public class FlightService {
     }
 
     public List<Flight> findAllFlights() {
-        return flightDao.findAll();
+        Session session = sessionFactory.getCurrentSession();
+        Transaction tx = session.beginTransaction();
+        List<Flight> flights = flightDao.findAll();
+        tx.commit();
+        return flights;
+
     }
 
     public void updateFlight(Flight flight) {
@@ -35,7 +48,15 @@ public class FlightService {
     }
 
     public void deleteFlight(Flight flight) {
-        flightDao.delete(flight);
+        Session session = sessionFactory.getCurrentSession();
+        Transaction tx = session.beginTransaction();
+        try {
+            flightDao.delete(flight);
+            tx.commit();
+        } catch (RuntimeException e) {
+            tx.rollback();
+            log.error(e);
+        }
     }
 
     public List<FlightDto> getAllFlightsDto(Locale locale) {

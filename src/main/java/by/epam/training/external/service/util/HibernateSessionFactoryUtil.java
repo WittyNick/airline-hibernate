@@ -1,4 +1,4 @@
-package by.epam.training.external.dao.util;
+package by.epam.training.external.service.util;
 
 import by.epam.training.external.entity.Crew;
 import by.epam.training.external.entity.Employee;
