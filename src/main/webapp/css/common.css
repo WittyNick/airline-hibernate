@@ -89,3 +89,9 @@ html, body {
 .pseudolink:hover {
     color: black;
 }
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

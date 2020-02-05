@@ -47,6 +47,14 @@
             <input id="buttonCancel" type="button" value="Cancel" onclick="location.href='${ctx}'">
         </form>
     </fieldset>
+    <br>
+    <div class="container">
+        <i>
+            <b>* default accounts:</b> <br>
+            <b>login:</b> admin | <b>password:</b> admin<br>
+            <b>login:</b> dispatcher | <b>password:</b> dispatcher
+        </i>
+    </div>
 </div>
 </body>
 </html>

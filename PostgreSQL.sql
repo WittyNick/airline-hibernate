@@ -18,6 +18,7 @@ CREATE TABLE crew_employee
 (
     crew_id     INTEGER NOT NULL,
     employee_id INTEGER NOT NULL,
+    PRIMARY KEY (crew_id, employee_id),
     FOREIGN KEY (crew_id) REFERENCES crews (id),
     FOREIGN KEY (employee_id) REFERENCES employees (id)
 );
