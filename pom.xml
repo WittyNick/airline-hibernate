@@ -11,7 +11,7 @@
 
     <properties>
         <gson.ver>2.8.6</gson.ver>
-        <log4j.ver>2.13.0</log4j.ver>
+        <log4j.ver>2.13.3</log4j.ver>
         <postgres.driver.ver>42.2.9</postgres.driver.ver>
         <servlet.ver>4.0.1</servlet.ver>
         <hibernate.ver>5.4.10.Final</hibernate.ver>
